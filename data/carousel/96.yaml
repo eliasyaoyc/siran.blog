@@ -1,0 +1,6 @@
+weight: 97
+title: "基础知识"
+description: >
+  <ul class="list-style-none">
+     <li>主要分享内容包括：开发工具，环境配置，基本原理，代码规范以及Debug调试等基础入门知识</li>
+   </ul>

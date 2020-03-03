@@ -1,0 +1,6 @@
+weight: 98
+title: "软件架构"
+description: >
+  <ul class="list-style-none">
+     <li>结合实际项目，分享当下热门软件架构设计的核心思想和实践经验，如常见的分层架构、事件驱动架构、微核架构、微服务架构以及云架构</li>
+   </ul>
