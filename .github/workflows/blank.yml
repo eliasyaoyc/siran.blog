@@ -1,0 +1,19 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: commit
+      run: |
+        git add .
+        git commit -m "update" -a
+    - name: Push changes
+      uses: root@120.27.212.152:/root/blog.git@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
