@@ -11,6 +11,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: commit
       run: |
+        git config --global user.email "1061347899@qq.com"
+        git config --global user.name "root"
         git add .
         git commit -m "update" -a
         git remote add origin root@120.27.212.152:/root/blog.git
