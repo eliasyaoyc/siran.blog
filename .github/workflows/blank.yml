@@ -15,6 +15,4 @@ jobs:
         git commit -m "update" -a
         git remote add origin root@120.27.212.152:/root/blog.git
         git push origin master
-    - name: Push changes
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+
