@@ -13,7 +13,8 @@ jobs:
       run: |
         git add .
         git commit -m "update" -a
+        git remote add origin root@120.27.212.152:/root/blog.git
     - name: Push changes
-      uses: root@120.27.212.152:/root/blog.git@master
+      uses: git push origin master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
