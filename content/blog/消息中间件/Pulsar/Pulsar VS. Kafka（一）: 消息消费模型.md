@@ -1,5 +1,5 @@
 ---
-title: "Apache Pulsar 的跨地域复制机制 - Geo Replication(二)"
+title: "Pulsar VS. Kafka（一）: 消息消费模型"
 date: 2020-03-04T13:37:42+08:00
 draft: false
 banner: "/img/blog/pulsar/pulsar.svg"

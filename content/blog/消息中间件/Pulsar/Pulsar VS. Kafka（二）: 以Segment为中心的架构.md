@@ -1,6 +1,6 @@
 ---
-title: "Pulsar VS. Kafka（2）: 以Segment为中心的架构"
-date: 2020-03-04T13:37:42+08:00
+title: "Pulsar VS. Kafka（二）: 以Segment为中心的架构"
+date: 2020-03-04T13:38:42+08:00
 draft: false
 banner: "/img/blog/pulsar/pulsar.svg"
 author: "Siran"
