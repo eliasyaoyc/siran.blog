@@ -20,7 +20,18 @@ keywords: ["消息中间件","Pulsar"]
 ### Architecture Overview
 
 ![](/img/blog/pulsar/architecture.png)
-
+****
+#### Brokers
+**** 
+#### Clusters
+**** 
+#### Metadata store
+**** 
+#### Persistent storage
+**** 
+#### BookKeeper
+**** 
+#### Ledgers
 **** 
 #### Pulsar 的消息消费模型
 **** 
@@ -32,7 +43,7 @@ keywords: ["消息中间件","Pulsar"]
 **** 
 
 
-
+****
 本文来自Pulsar社区，如果对Pulsar感兴趣，可通过下列方式参与Pulsar社区：
 
 - Pulsar Slack频道: 
