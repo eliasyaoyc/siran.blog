@@ -5,11 +5,10 @@ draft: false
 banner: "/img/blog/pulsar/pulsar.svg"
 author: "Siran"
 summary: ""
-tags: ["Pulsar"]
-categories: ["Pulsar"]
-keywords: ["Pulsar"]
+tags: ["消息中间件"]
+categories: ["消息中间件"]
+keywords: ["消息中间件","Pulsar"]
 ---
-## 问题
 
-## 总结
+### 总结
 
