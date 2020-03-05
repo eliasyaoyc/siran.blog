@@ -6,18 +6,90 @@
     <description>Recent content in Blogs on Siran Yao</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Sun, 01 Mar 2020 19:12:42 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 05 Mar 2020 12:37:42 +0800</lastBuildDate>
     
 	<atom:link href="/blog/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>123.md</title>
-      <link>/blog/123/</link>
-      <pubDate>Sun, 01 Mar 2020 19:12:42 +0800</pubDate>
+      <title>AtomicStampedReference 详解</title>
+      <link>/blog/atomicstampedreference-%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Thu, 05 Mar 2020 12:37:42 +0800</pubDate>
       
-      <guid>/blog/123/</guid>
-      <description>Condition可以替代传统的Object中的wait()、notify()和notifyAll()方法来实现线程间的通信，使线程间协作更加安全和高效。</description>
+      <guid>/blog/atomicstampedreference-%E8%AF%A6%E8%A7%A3/</guid>
+      <description>AtomicStampedReference是jdk1.5出的一个类，用于解决其他原子类无法解决的ABA问题。</description>
+    </item>
+    
+    <item>
+      <title>LongAdder 详解</title>
+      <link>/blog/longadder-%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Thu, 05 Mar 2020 11:37:42 +0800</pubDate>
+      
+      <guid>/blog/longadder-%E8%AF%A6%E8%A7%A3/</guid>
+      <description>LongAdder 类是jdk1.8新增的原子类，在多线程环境下，它的性能比普通的Atomic类性能高很多，继承 Striped64，通过Striped64的Cell来实现功能，并且在ConcurrentHashMap中也用了Striped64的Cell。</description>
+    </item>
+    
+    <item>
+      <title>Apache Pulsar - Topic Discovery</title>
+      <link>/blog/apache-pulsar-topic-discovery/</link>
+      <pubDate>Wed, 04 Mar 2020 22:37:42 +0800</pubDate>
+      
+      <guid>/blog/apache-pulsar-topic-discovery/</guid>
+      <description>问题 总结</description>
+    </item>
+    
+    <item>
+      <title>new 对象的几种方式-Builder</title>
+      <link>/blog/new-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F-builder/</link>
+      <pubDate>Wed, 04 Mar 2020 15:37:42 +0800</pubDate>
+      
+      <guid>/blog/new-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F-builder/</guid>
+      <description>问题 总结</description>
+    </item>
+    
+    <item>
+      <title>Apache Pulsar 的跨地域复制机制 - Geo Replication(一)</title>
+      <link>/blog/apache-pulsar-%E7%9A%84%E8%B7%A8%E5%9C%B0%E5%9F%9F%E5%A4%8D%E5%88%B6%E6%9C%BA%E5%88%B6-geo-replication%E4%B8%80/</link>
+      <pubDate>Wed, 04 Mar 2020 13:37:42 +0800</pubDate>
+      
+      <guid>/blog/apache-pulsar-%E7%9A%84%E8%B7%A8%E5%9C%B0%E5%9F%9F%E5%A4%8D%E5%88%B6%E6%9C%BA%E5%88%B6-geo-replication%E4%B8%80/</guid>
+      <description>问题 总结</description>
+    </item>
+    
+    <item>
+      <title>Apache Pulsar 的跨地域复制机制 - Geo Replication(二)</title>
+      <link>/blog/apache-pulsar-%E7%9A%84%E8%B7%A8%E5%9C%B0%E5%9F%9F%E5%A4%8D%E5%88%B6%E6%9C%BA%E5%88%B6-geo-replication%E4%BA%8C/</link>
+      <pubDate>Wed, 04 Mar 2020 13:37:42 +0800</pubDate>
+      
+      <guid>/blog/apache-pulsar-%E7%9A%84%E8%B7%A8%E5%9C%B0%E5%9F%9F%E5%A4%8D%E5%88%B6%E6%9C%BA%E5%88%B6-geo-replication%E4%BA%8C/</guid>
+      <description>问题 总结</description>
+    </item>
+    
+    <item>
+      <title>MacOS 单机搭建 Pulsar 集群</title>
+      <link>/blog/macos-%E5%8D%95%E6%9C%BA%E6%90%AD%E5%BB%BA-pulsar-%E9%9B%86%E7%BE%A4/</link>
+      <pubDate>Wed, 04 Mar 2020 13:37:42 +0800</pubDate>
+      
+      <guid>/blog/macos-%E5%8D%95%E6%9C%BA%E6%90%AD%E5%BB%BA-pulsar-%E9%9B%86%E7%BE%A4/</guid>
+      <description>问题 总结</description>
+    </item>
+    
+    <item>
+      <title>Pulsar VS. Kafka（1）: 消息消费模型</title>
+      <link>/blog/pulsar-vs.-kafka1-%E6%B6%88%E6%81%AF%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%9E%8B/</link>
+      <pubDate>Wed, 04 Mar 2020 13:37:42 +0800</pubDate>
+      
+      <guid>/blog/pulsar-vs.-kafka1-%E6%B6%88%E6%81%AF%E6%B6%88%E8%B4%B9%E6%A8%A1%E5%9E%8B/</guid>
+      <description>问题 总结</description>
+    </item>
+    
+    <item>
+      <title>Pulsar VS. Kafka（2）: 以Segment为中心的架构</title>
+      <link>/blog/pulsar-vs.-kafka2-%E4%BB%A5segment%E4%B8%BA%E4%B8%AD%E5%BF%83%E7%9A%84%E6%9E%B6%E6%9E%84/</link>
+      <pubDate>Wed, 04 Mar 2020 13:37:42 +0800</pubDate>
+      
+      <guid>/blog/pulsar-vs.-kafka2-%E4%BB%A5segment%E4%B8%BA%E4%B8%AD%E5%BF%83%E7%9A%84%E6%9E%B6%E6%9E%84/</guid>
+      <description>问题 总结</description>
     </item>
     
     <item>

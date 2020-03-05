@@ -38,14 +38,5 @@
       <description>ScheduledThreadPoolExecutor 定义了一个延迟队列 DelayedWorkQueue，这个队列是基于二叉堆来实现的，每次都会把最快要执行的任务放入堆顶(最小堆)。</description>
     </item>
     
-    <item>
-      <title>Semaphore 源码分析</title>
-      <link>/blog/semaphore-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
-      <pubDate>Tue, 05 Jun 2018 19:12:42 +0800</pubDate>
-      
-      <guid>/blog/semaphore-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
-      <description>基于微服务的架构是未来的趋势，但是实现这种架构会面临许多困难。现代应用架构远比过去的架构复杂，因此实现微服务架构将会带来了一系列特殊的挑战，而服务网格可以帮我们解决很多问题。</description>
-    </item>
-    
   </channel>
 </rss>

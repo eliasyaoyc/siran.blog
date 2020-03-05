@@ -6,10 +6,37 @@
     <description>Recent content in Tags on Siran Yao</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Sun, 01 Mar 2020 19:12:42 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 05 Mar 2020 12:37:42 +0800</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>原子类</title>
+      <link>/tags/%E5%8E%9F%E5%AD%90%E7%B1%BB/</link>
+      <pubDate>Thu, 05 Mar 2020 12:37:42 +0800</pubDate>
+      
+      <guid>/tags/%E5%8E%9F%E5%AD%90%E7%B1%BB/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Pulsar</title>
+      <link>/tags/pulsar/</link>
+      <pubDate>Wed, 04 Mar 2020 22:37:42 +0800</pubDate>
+      
+      <guid>/tags/pulsar/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>设计模式</title>
+      <link>/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Wed, 04 Mar 2020 15:37:42 +0800</pubDate>
+      
+      <guid>/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>AQS</title>

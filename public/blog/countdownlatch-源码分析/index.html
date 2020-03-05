@@ -273,19 +273,23 @@ autocomplete('#aa-search-input',
                             
                         </div>
                         <div id="post-content">
-                          <h2 id="问题">问题</h2>
+                          <h3 id="问题">问题</h3>
 <ul>
 <li>CountDownLatch是什么？</li>
 <li>CountDownLatch具有哪些特性？</li>
 <li>CountDownLatch通常运用在什么场景中？</li>
 <li>CountDownLatch的初始次数是否可以调整？</li>
 </ul>
-<h2 id="简述">简述</h2>
+<hr>
+<h3 id="简述">简述</h3>
+<blockquote>
 <p>CountDownLatch这个类能够使一个线程等待其他线程完成各自的工作后再执行。例如，应用程序的主线程希望在负责启动框架服务的线程已经启动所有的框架服务之后再执行。</p>
 <p>CountDownLatch是通过一个计数器来实现的，计数器的初始值为线程的数量。每当一个线程完成了自己的任务后，计数器的值就会减1。当计数器值到达0时，它表示所有的线程已经完成了任务，然后在闭锁上等待的线程就可以恢复执行任务。</p>
-<p>执行过程如下图所示：</p>
-<!-- raw HTML omitted -->
-<h2 id="countdownlatch的使用">CountDownLatch的使用</h2>
+</blockquote>
+<p><strong>执行过程如下图所示：</strong></p>
+<p><img src="/img/blog/AQS/4.png" alt=""></p>
+<hr>
+<h3 id="countdownlatch的使用">CountDownLatch的使用</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public class CountDownTest {
     public <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> main(String[] args) throws InterruptedException {
         CountDownLatch latch <span style="color:#f92672">=</span> new CountDownLatch(<span style="color:#ae81ff">3</span>);
@@ -307,7 +311,7 @@ autocomplete('#aa-search-input',
         System.out.println(<span style="color:#e6db74">&#34;after latch.await()...&#34;</span>);
     }
 }
-</code></pre></div><p>创建了一个初始值为3的CountDownLatch对象latch，然后创建了3个线程，每个线程执行时都会执行latch.countDown()使计数器的值减1，而主线程在执行到latch.await()时会等待直到计数器的值为0。输出的结果如下：</p>
+</code></pre></div><p><strong>创建了一个初始值为3的CountDownLatch对象latch，然后创建了3个线程，每个线程执行时都会执行latch.countDown()使计数器的值减1，而主线程在执行到latch.await()时会等待直到计数器的值为0。输出的结果如下：</strong></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">in main...
 before latch.await()...
 enter Thread T1...
@@ -322,15 +326,17 @@ exit ThreadT3.
 in main...
 after latch.await()...
 
-</code></pre></div><p>可以看到CountDownLatch 是主要通过#countDown方法和#await方法来实现此功能得，接下来会详细分析这两个方法。</p>
-<h2 id="源码分析aqs共享模式的实现reentrantlock是独占模式">源码分析(AQS共享模式的实现,ReentrantLock是独占模式)</h2>
-<h3 id="构造方法">构造方法</h3>
+</code></pre></div><p>可以看到CountDownLatch 是主要通过<code>#countDown</code>方法和<code>#await</code>方法来实现此功能得，接下来会详细分析这两个方法。</p>
+<hr>
+<h3 id="源码分析aqs共享模式的实现reentrantlock是独占模式">源码分析(AQS共享模式的实现,ReentrantLock是独占模式)</h3>
+<h4 id="构造方法">构造方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">//传入一个参数count，CountDownLatch也使用了内部类Sync来实现，Sync继承自AQS：
 </span><span style="color:#75715e"></span>public <span style="color:#a6e22e">CountDownLatch</span>(<span style="color:#66d9ef">int</span> count) {
     <span style="color:#66d9ef">if</span> (count <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>) throw new IllegalArgumentException(<span style="color:#e6db74">&#34;count &lt; 0&#34;</span>);
     this.sync <span style="color:#f92672">=</span> new Sync(count);
 }
-</code></pre></div><h3 id="sync-内部类">sync 内部类</h3>
+</code></pre></div><hr>
+<h4 id="sync-内部类">sync 内部类</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">private <span style="color:#66d9ef">static</span> final class Sync extends AbstractQueuedSynchronizer {
     private <span style="color:#66d9ef">static</span> final <span style="color:#66d9ef">long</span> serialVersionUID <span style="color:#f92672">=</span> <span style="color:#ae81ff">4982264981922014374L</span>;
     Sync(<span style="color:#66d9ef">int</span> count) {
@@ -354,13 +360,15 @@ after latch.await()...
         }
     }
 }
-</code></pre></div><p>这里调用了AQS类中的setState方法来设置count，AQS的state属性在ReentrantLock文章已经提到，它是AQS中的状态标识，具体的含义由子类来定义，可见这里把state定义为数量。</p>
-<h3 id="await-方法">await 方法</h3>
+</code></pre></div><p>这里调用了AQS类中的setState方法来设置count，AQS的state属性在ReentrantLock文章已经提到，它是AQS中的状态标识，具体的含义由子类来定义，可见这里把<code>state定义为数量</code>。</p>
+<hr>
+<h4 id="await-方法">await 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">await</span>() throws InterruptedException {
     sync.acquireSharedInterruptibly(<span style="color:#ae81ff">1</span>);
 }
-</code></pre></div><p>直接调用了AQS类中的#acquireSharedInterruptibly方法</p>
-<h3 id="acquiresharedinterruptibly-方法">acquireSharedInterruptibly 方法</h3>
+</code></pre></div><p>直接调用了AQS类中的<code>#acquireSharedInterruptibly</code>方法</p>
+<hr>
+<h4 id="acquiresharedinterruptibly-方法">acquireSharedInterruptibly 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public final <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">acquireSharedInterruptibly</span>(<span style="color:#66d9ef">int</span> arg)
             throws InterruptedException {
     <span style="color:#75715e">//&lt;1&gt; 如果线程被中断则抛出异常,会归位
@@ -371,13 +379,15 @@ after latch.await()...
         <span style="color:#75715e">//&lt;3&gt; 如果获取失败，需要根据当前线程创建一个mode为SHARE的的Node放入队列中并循环获取
 </span><span style="color:#75715e"></span>        doAcquireSharedInterruptibly(arg);
 }
-</code></pre></div><p>这里的tryAcquireShared方法在Sync中被重写。</p>
-<h3 id="tryacquireshared-方法">tryAcquireShared 方法</h3>
+</code></pre></div><p>这里的<code>tryAcquireShared</code>方法在Sync中被重写。</p>
+<hr>
+<h4 id="tryacquireshared-方法">tryAcquireShared 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">protected <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tryAcquireShared</span>(<span style="color:#66d9ef">int</span> acquires) {
     <span style="color:#75715e">//根据状态来判断，如果state等于0的时候，说明计数器为0了，返回1表示成功，否则返回-1表示失败。
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> (getState() <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) <span style="color:#f92672">?</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">:</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
 }
-</code></pre></div><h3 id="doacquiresharedinterruptibly-方法">doAcquireSharedInterruptibly 方法</h3>
+</code></pre></div><hr>
+<h4 id="doacquiresharedinterruptibly-方法">doAcquireSharedInterruptibly 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">private <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doAcquireSharedInterruptibly</span>(<span style="color:#66d9ef">int</span> arg)
         throws InterruptedException {
     <span style="color:#75715e">//&lt;1&gt; 创建一个共享模式的节点
@@ -407,7 +417,8 @@ after latch.await()...
             cancelAcquire(node);
     }
 }
-</code></pre></div><h3 id="setheadandpropagate-方法">setHeadAndPropagate 方法</h3>
+</code></pre></div><hr>
+<h4 id="setheadandpropagate-方法">setHeadAndPropagate 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">private <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setHeadAndPropagate</span>(Node node, <span style="color:#66d9ef">int</span> propagate) {
     <span style="color:#75715e">//&lt;1&gt; 首先先将之前的head记录一下，用于下面的判断
 </span><span style="color:#75715e"></span>    Node h <span style="color:#f92672">=</span> head; <span style="color:#75715e">// Record old head for check below
@@ -437,14 +448,17 @@ after latch.await()...
             doReleaseShared();
     }
 }
-</code></pre></div><p>如果h.waitStatus &gt;= 0，表示是初始状态或者是取消状态，那么当propagate &lt;= 0时将不唤醒节点。</p>
+</code></pre></div><blockquote>
+<p>如果h.waitStatus &gt;= 0，表示是初始状态或者是取消状态，那么当propagate &lt;= 0时将不唤醒节点。</p>
 <p>获取node的下一个节点s，如果s == null || s.isShared()则释放节点并唤醒。为什么下一个节点为null的时候也需要唤醒操作呢？仔细理解一下这句话：</p>
 <p>The conservatism in both of these checks may cause unnecessary wake-ups, but only when there are multiple racing acquires/releases, so most need signals now or soon anyway.</p>
 <p>这种保守的检查方式可能会引起多次不必要的线程唤醒操作，但这些情况仅存在于多线程并发的acquires/releases操作，所以大多线程数需要立即或者很快地一个信号。这个信号就是执行unpark方法。因为LockSupport在unpark的时候，相当于给了一个信号，即使这时候没有线程在park状态，之后有线程执行park的时候也会读到这个信号就不会被挂起。</p>
 <p>在简单点说，就是线程在执行时，如果之前没有unpark操作，在执行park时会阻塞该线程；但如果在park之前执行过一次或多次unpark（unpark调用多次和一次是一样的，结果不会累加）这时执行park时并不会阻塞该线程。</p>
 <p>所以，如果在唤醒node的时候下一个节点刚好添加到队列中，就可能避免了一次阻塞的操作。</p>
-<p>所以这里的propagate表示传播，传播的过程就是只要成功的获取到共享锁就唤醒下一个节点。</p>
-<h3 id="doreleaseshared-方法">doReleaseShared 方法</h3>
+<p>所以这里的propagate表示传播，传播的过程就是只要成功的获取到共享锁就唤醒下一个节点。`</p>
+</blockquote>
+<hr>
+<h4 id="doreleaseshared-方法">doReleaseShared 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">private <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doReleaseShared</span>() {
     <span style="color:#75715e">/*
 </span><span style="color:#75715e">     * Ensure that a release propagates, even if there are other
@@ -479,7 +493,7 @@ after latch.await()...
 </span><span style="color:#75715e"></span>            <span style="color:#66d9ef">break</span>;
     }
 }
-</code></pre></div><p>什么时候状态会是SIGNAL呢？回顾一下shouldParkAfterFailedAcquire方法：</p>
+</code></pre></div><p>什么时候状态会是SIGNAL呢？回顾一下<code>shouldParkAfterFailedAcquire</code>方法：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">private <span style="color:#66d9ef">static</span> boolean <span style="color:#a6e22e">shouldParkAfterFailedAcquire</span>(Node pred, Node node) {
     <span style="color:#66d9ef">int</span> ws <span style="color:#f92672">=</span> pred.waitStatus;
     <span style="color:#66d9ef">if</span> (ws <span style="color:#f92672">==</span> Node.SIGNAL)
@@ -507,22 +521,26 @@ after latch.await()...
     }
     <span style="color:#66d9ef">return</span> false;
 }
-</code></pre></div><p>当状态不为CANCEL或者是SIGNAL时，为了保险起见，这里把状态都设置成了SIGNAL，然后会再次循环进行判断是否需要阻塞。</p>
+</code></pre></div><p>当状态不为<code>CANCEL或者是SIGNAL</code>时，为了保险起见，这里把状态都设置成了SIGNAL，然后会再次循环进行判断是否需要阻塞。</p>
 <p>回到doReleaseShared方法，这里为什么不直接把SIGNAL设置为PROPAGATE，而是先把SIGNAL设置为0，然后再设置为PROPAGATE呢？</p>
 <p>原因在于unparkSuccessor方法，该方法会判断当前节点的状态是否小于0，如果小于0则将h的状态设置为0，如果在这里直接设置为PROPAGATE状态的话，则相当于多做了一次CAS操作。unparkSuccessor中的代码如下：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> ws <span style="color:#f92672">=</span> node.waitStatus;
 <span style="color:#66d9ef">if</span> (ws <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>)
     compareAndSetWaitStatus(node, ws, <span style="color:#ae81ff">0</span>);
 
-</code></pre></div><p>其实这里只判断状态为SIGNAL和0还有另一个原因，那就是当前执行doReleaseShared循环时的状态只可能为SIGNAL和0，因为如果这时没有后继节点的话，当前节点状态没有被修改，是初始的0；
+</code></pre></div><blockquote>
+<p>其实这里只判断状态为SIGNAL和0还有另一个原因，那就是当前执行doReleaseShared循环时的状态只可能为SIGNAL和0，因为如果这时没有后继节点的话，当前节点状态没有被修改，是初始的0；
 如果在执行setHead方法之前，这时刚好有后继节点被添加到队列中的话，因为这时后继节点判断p == head为false，所以会执行shouldParkAfterFailedAcquire方法，将当前节点的状态设置为SIGNAL。
 当状态为0时设置状态为PROPAGATE成功，则判断h == head结果为true，表示当前节点是队列中的唯一一个节点，所以直接就返回了；如果为false，则说明已经有后继节点的线程设置了head，这时不返回继续循环，但刚才获取的h已经用不到了，等待着被回收。</p>
-<h3 id="countdown-方法">countDown 方法</h3>
+</blockquote>
+<hr>
+<h4 id="countdown-方法">countDown 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">countDown</span>() {
     sync.releaseShared(<span style="color:#ae81ff">1</span>);
 }
-</code></pre></div><p>这里是调用了AQS中的releaseShared方法。</p>
-<h3 id="releaseshared-方法">releaseShared 方法</h3>
+</code></pre></div><p>这里是调用了AQS中的<code>releaseShared</code>方法。</p>
+<hr>
+<h4 id="releaseshared-方法">releaseShared 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public final boolean <span style="color:#a6e22e">releaseShared</span>(<span style="color:#66d9ef">int</span> arg) {
     <span style="color:#75715e">//&lt;1&gt; 尝试释放共享节点，如果成功则执行释放和唤醒操作
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (tryReleaseShared(arg)) {
@@ -531,11 +549,10 @@ after latch.await()...
     }
     <span style="color:#66d9ef">return</span> false;
 }
-</code></pre></div><p>这里调用的tryReleaseShared方法是在CountDownLatch中的Sync类重写的，而doReleaseShared方法已在上文中介绍过了。</p>
-<h3 id="tryreleaseshared-方法">tryReleaseShared 方法</h3>
-<blockquote>
+</code></pre></div><p>这里调用的<code>tryReleaseShared</code>方法是在<code>CountDownLatch</code>中的Sync类重写的，而<code>doReleaseShare</code>d方法已在上文中介绍过了。</p>
+<hr>
+<h4 id="tryreleaseshared-方法">tryReleaseShared 方法</h4>
 <p>这里设置state的操作需要循环来设置以确保成功。</p>
-</blockquote>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">protected boolean <span style="color:#a6e22e">tryReleaseShared</span>(<span style="color:#66d9ef">int</span> releases) {
     <span style="color:#75715e">// Decrement count; signal when transition to zero
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> (;;) {
@@ -550,10 +567,9 @@ after latch.await()...
             <span style="color:#66d9ef">return</span> nextc <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>;
     }
 }
-</code></pre></div><h3 id="超时功能的await方法">超时功能的await方法</h3>
-<blockquote>
-<p>对应于上文中提到的doAcquireSharedInterruptibly方法，还有一个提供了超时控制的doAcquireSharedNanos方法，代码如下：</p>
-</blockquote>
+</code></pre></div><hr>
+<h4 id="超时功能的await方法">超时功能的await方法</h4>
+<p>对应于上文中提到的<code>doAcquireSharedInterruptibly</code>方法，还有一个提供了超时控制的<code>doAcquireSharedNanos</code>方法，代码如下：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">private boolean <span style="color:#a6e22e">doAcquireSharedNanos</span>(<span style="color:#66d9ef">int</span> arg, <span style="color:#66d9ef">long</span> nanosTimeout)
             throws InterruptedException {
 	<span style="color:#66d9ef">if</span> (nanosTimeout <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0L</span>)
@@ -593,36 +609,55 @@ after latch.await()...
 <li>每次循环判断是否已经超出截止时间，即deadline - System.nanoTime()是否大于0，大于0表示已经超时，返回false，小于0表示还未超时；</li>
 <li>如果未超时通过调用shouldParkAfterFailedAcquire方法判断是否需要park，如果返回true则再判断nanosTimeout &gt; spinForTimeoutThreshold，spinForTimeoutThreshold是自旋的最小阈值，这里被Doug Lea设置成了1000，表示1000纳秒，也就是说如果剩余的时间不足1000纳秒，则不需要park。</li>
 </ul>
-<h2 id="总结">总结</h2>
+<hr>
+<h3 id="总结">总结</h3>
 <ol>
-<li>CountDownLatch的AQS共享模式的实现：</li>
+<li>
+<p><strong>CountDownLatch的AQS共享模式的实现：</strong></p>
+<p><code>调用await</code></p>
+</li>
 </ol>
-<h5 id="调用await">调用await</h5>
 <ul>
-<li>共享锁获取失败（计数器还不为0），则将该线程封装为一个Node对象放入队列中，并阻塞该线程。</li>
-<li>共享锁获取成功（计数器为0），则从第一个节点开始依次唤醒后继节点，实现共享状态的传播。</li>
-</ul>
-<h5 id="调用countdown">调用countDown</h5>
-<ul>
-<li>如果计数器不为0，则不释放，继续阻塞，并把state的值减1；</li>
-<li>如果计数器为0，则唤醒节点，解除线程的阻塞状态。</li>
+<li>
+<p>共享锁获取失败（计数器还不为0），则将该线程封装为一个Node对象放入队列中，并阻塞该线程。</p>
+</li>
+<li>
+<p>共享锁获取成功（计数器为0），则从第一个节点开始依次唤醒后继节点，实现共享状态的传播。</p>
+<p><code>调用countDown</code></p>
+</li>
+<li>
+<p>如果计数器不为0，则不释放，继续阻塞，并把state的值减1；</p>
+</li>
+<li>
+<p>如果计数器为0，则唤醒节点，解除线程的阻塞状态。</p>
+</li>
 </ul>
 <ol start="2">
-<li>CountDownLatch表示允许一个或多个线程等待其它线程的操作执行完毕后再执行后续的操作</li>
-<li>独占模式和共享模式得区别：</li>
+<li>
+<p><strong>CountDownLatch表示允许一个或多个线程等待其它线程的操作执行完毕后再执行后续的操作</strong></p>
+</li>
+<li>
+<p><strong>独占模式和共享模式得区别：</strong></p>
+<p><code>相同点</code></p>
+</li>
 </ol>
-<h5 id="相同点">相同点</h5>
 <ul>
-<li>锁的获取和释放的判断都是由子类来实现的。</li>
+<li>
+<p>锁的获取和释放的判断都是由子类来实现的。</p>
+<p><code>不同点</code></p>
+</li>
+<li>
+<p>独占功能在获取节点之后并且还未释放时，其他的节点会一直阻塞，直到第一个节点被释放才会唤醒。</p>
+</li>
+<li>
+<p>共享功能在获取节点之后会立即唤醒队列中的后继节点，每一个节点都会唤醒自己的后继节点，这就是共享状态的传播。</p>
+</li>
 </ul>
-<h5 id="不同点">不同点</h5>
-<ul>
-<li>独占功能在获取节点之后并且还未释放时，其他的节点会一直阻塞，直到第一个节点被释放才会唤醒。</li>
-<li>共享功能在获取节点之后会立即唤醒队列中的后继节点，每一个节点都会唤醒自己的后继节点，这就是共享状态的传播。</li>
-</ul>
-<p>根据以上的总结可以看出，AQS不关心state具体是什么，含义由子类去定义，子类则根据该变量来进行获取和释放的判断，AQS只是维护了该变量，
-并且实现了一系列用来判断资源是否可以访问的API，它提供了对线程的入队和出队的操作，它还负责处理线程对资源的访问方式，
-例如：什么时候可以对资源进行访问，什么时候阻塞线程，什么时候唤醒线程，线程被取消后如何处理等。而子类则用来实现资源是否可以被访问的判断。</p>
+<blockquote>
+<p>根据以上的总结可以看出，AQS不关心state具体是什么，含义由子类去定义，子类则根据该变量来进行获取和释放的判断，AQS只是维护了该变量，</p>
+<p>并且实现了一系列用来判断资源是否可以访问的API，它提供了对线程的入队和出队的操作，它还负责处理线程对资源的访问方式，</p>
+<p>例如：什么时候可以对资源进行访问，什么时候阻塞线程，什么时候唤醒线程，线程被取消后如何处理等。而子类则用来实现资源是否可以被访问的判断。</p>
+</blockquote>
 
                         </div>
                         
@@ -670,9 +705,9 @@ after latch.await()...
          
         <li><a href="/blog/reentrantlock-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fa fa-link"></i>ReentrantLock 源码分析</a></li>
          
-        <li><a href="/blog/threadpoolexecutor-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fa fa-link"></i>ThreadPoolExecutor 源码分析</a></li>
+        <li><a href="/blog/semaphore-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fa fa-link"></i>Semaphore 源码分析</a></li>
          
-        <li><a href="/blog/scheduledthreadpoolexecutor-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fa fa-link"></i>ScheduledThreadPoolExecutor 源码分析</a></li>
+        <li><a href="/blog/threadpoolexecutor-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fa fa-link"></i>ThreadPoolExecutor 源码分析</a></li>
          
      </ul>
     </div>
@@ -695,13 +730,19 @@ after latch.await()...
             <li><a href="/categories/aqs"><i class="fa fa-navicon"></i>aqs (6)</a>
             </li>
             
-            <li><a href="/categories/jdk%e6%ba%90%e7%a0%81"><i class="fa fa-navicon"></i>jdk源码 (11)</a>
+            <li><a href="/categories/pulsar"><i class="fa fa-navicon"></i>pulsar (6)</a>
             </li>
             
             <li><a href="/categories/%e5%88%86%e5%b8%83%e5%bc%8f"><i class="fa fa-navicon"></i>分布式 (2)</a>
             </li>
             
-            <li><a href="/categories/%e7%ba%bf%e7%a8%8b%e6%b1%a0"><i class="fa fa-navicon"></i>线程池 (4)</a>
+            <li><a href="/categories/%e5%8e%9f%e5%ad%90%e7%b1%bb"><i class="fa fa-navicon"></i>原子类 (2)</a>
+            </li>
+            
+            <li><a href="/categories/%e7%ba%bf%e7%a8%8b%e6%b1%a0"><i class="fa fa-navicon"></i>线程池 (3)</a>
+            </li>
+            
+            <li><a href="/categories/%e8%ae%be%e8%ae%a1%e6%a8%a1%e5%bc%8f"><i class="fa fa-navicon"></i>设计模式 (1)</a>
             </li>
             
             <li><a href="/categories/%e9%9b%86%e5%90%88"><i class="fa fa-navicon"></i>集合 (1)</a>
@@ -756,40 +797,40 @@ after latch.await()...
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
-                        <a href="/blog/123/">
+                        <a href="/blog/atomicstampedreference-%E8%AF%A6%E8%A7%A3/">
                             
-                            <img src="/img/blog/banners/6ce41a46gy1g31wxsf5ibj20rs0ku10r.jpg" class="img-responsive" alt="123.md">
+                            <img src="/img/blog/banners/006tKfTcly1g0n3qqw0xqj31400u0hdt.jpg" class="img-responsive" alt="AtomicStampedReference 详解">
                             
                         </a>
                     </div>
                     <div class="name same-height-always">
-                        <h5><a href="/blog/123/">123.md</a></h5>
+                        <h5><a href="/blog/atomicstampedreference-%E8%AF%A6%E8%A7%A3/">AtomicStampedReference 详解</a></h5>
                     </div>
                 </div>
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
-                        <a href="/blog/condition-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+                        <a href="/blog/longadder-%E8%AF%A6%E8%A7%A3/">
                             
-                            <img src="/img/blog/banners/6ce41a46gy1g31wxsf5ibj20rs0ku10r.jpg" class="img-responsive" alt="Condition 源码分析">
+                            <img src="/img/blog/banners/006tKfTcly1g0d0qfcwpfj31400u0u11.jpg" class="img-responsive" alt="LongAdder 详解">
                             
                         </a>
                     </div>
                     <div class="name same-height-always">
-                        <h5><a href="/blog/condition-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Condition 源码分析</a></h5>
+                        <h5><a href="/blog/longadder-%E8%AF%A6%E8%A7%A3/">LongAdder 详解</a></h5>
                     </div>
                 </div>
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
-                        <a href="/blog/futuretask-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+                        <a href="/blog/apache-pulsar-topic-discovery/">
                             
-                            <img src="/img/blog/banners/006tNbRwly1fug0hms6vej31jk15ou0x.jpg" class="img-responsive" alt="FutureTask 源码分析">
+                            <img src="/img/blog/pulsar/pulsar.svg" class="img-responsive" alt="Apache Pulsar - Topic Discovery">
                             
                         </a>
                     </div>
                     <div class="name same-height-always">
-                        <h5><a href="/blog/futuretask-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">FutureTask 源码分析</a></h5>
+                        <h5><a href="/blog/apache-pulsar-topic-discovery/">Apache Pulsar - Topic Discovery</a></h5>
                     </div>
                 </div>
                 

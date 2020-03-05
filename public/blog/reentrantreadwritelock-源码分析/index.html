@@ -273,16 +273,16 @@ autocomplete('#aa-search-input',
                             
                         </div>
                         <div id="post-content">
-                          <h2 id="问题">问题</h2>
+                          <h3 id="问题">问题</h3>
 <ul>
 <li>ReentrantReadWriteLock 是什么</li>
 <li>ReentrantReadWriteLock 具有哪些特性？</li>
 <li>ReentrantReadWriteLock是怎么实现读写锁的？</li>
 <li>如何使用ReentrantReadWriteLock实现高效安全的TreeMap？</li>
 </ul>
-<h2 id="简述">简述</h2>
-<h2 id="reentrantreadwritelock-使用">ReentrantReadWriteLock 使用</h2>
-<p>在ReentrantReadWriteLock类中javadoc中的例子，代码如下：</p>
+<hr>
+<h3 id="reentrantreadwritelock-使用">ReentrantReadWriteLock 使用</h3>
+<p>在<code>ReentrantReadWriteLock</code>类中<code>javadoc</code>中的例子，代码如下：</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">class RWDictionary {
     private final Map<span style="color:#f92672">&lt;</span>String, Data<span style="color:#f92672">&gt;</span> m <span style="color:#f92672">=</span> new TreeMap<span style="color:#f92672">&lt;</span>String, Data<span style="color:#f92672">&gt;</span>();
     private final ReentrantReadWriteLock rwl <span style="color:#f92672">=</span> new ReentrantReadWriteLock();
@@ -312,18 +312,18 @@ autocomplete('#aa-search-input',
       finally { w.unlock(); }
     }
   }
-</code></pre></div><h2 id="源码分析">源码分析</h2>
-<h3 id="主要属性">主要属性</h3>
+</code></pre></div><hr>
+<h3 id="源码分析">源码分析</h3>
+<h4 id="主要属性">主要属性</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">    <span style="color:#75715e">// 内部类  读锁
 </span><span style="color:#75715e"></span>    private final ReentrantReadWriteLock.ReadLock readerLock;
     <span style="color:#75715e">// 内部类 写锁
 </span><span style="color:#75715e"></span>    private final ReentrantReadWriteLock.WriteLock writerLock;
     <span style="color:#75715e">// 内部类 继承 AbstractQueuedSynchronizer 
 </span><span style="color:#75715e"></span>    final Sync sync;
-</code></pre></div><h3 id="构造函数">构造函数</h3>
-<blockquote>
-<p>和ReentrantLock一样也分公平锁和非公平锁，默认是非公平锁。</p>
-</blockquote>
+</code></pre></div><hr>
+<h4 id="构造函数">构造函数</h4>
+<p>和<code>ReentrantLock</code>一样也分公平锁和非公平锁，默认是非公平锁。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public <span style="color:#a6e22e">ReentrantReadWriteLock</span>() {
         this(false);
     }
@@ -332,21 +332,18 @@ public <span style="color:#a6e22e">ReentrantReadWriteLock</span>(boolean fair) {
         readerLock <span style="color:#f92672">=</span> new ReadLock(this);
         writerLock <span style="color:#f92672">=</span> new WriteLock(this);
     }
-</code></pre></div><p>在创建 ReentrantReadWriteLock 的时候会初始化两个内部类 ReadLock 和 WriteLock。
-此外的另外三个内部类Sync、FairSync、NonfairSync 在ReentrantLock中已经分析过了详情可看下面这篇文章：</p>
-<ul>
-<li>{% post_link ReentrantLock 源码分析 ReentrantLock 源码分析 %}</li>
-</ul>
+</code></pre></div><p><strong>在创建 ReentrantReadWriteLock 的时候会初始化两个内部类 ReadLock 和 WriteLock。
+此外的另外三个内部类Sync、FairSync、NonfairSync 在ReentrantLock中已经分析过了详情可看下面这篇文章：</strong></p>
+<hr>
 <h3 id="readlock-内部类">ReadLock 内部类</h3>
-<h3 id="readlocklock-方法">ReadLock.lock 方法</h3>
+<h4 id="readlocklock-方法">ReadLock.lock 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">//ReentrantReadWriteLock.ReadLock.lock()
 </span><span style="color:#75715e"></span>public <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">lock</span>() {
             sync.acquireShared(<span style="color:#ae81ff">1</span>);
         }
-</code></pre></div><h3 id="acquireshared-方法">acquireShared 方法</h3>
-<blockquote>
-<p>ReadLock.lock 方法会调用 AQS中的acquireShared方法(共享模式)</p>
-</blockquote>
+</code></pre></div><hr>
+<h4 id="acquireshared-方法">acquireShared 方法</h4>
+<p><code>ReadLock.lock</code> 方法会调用 AQS中的<code>acquireShared</code>方法(共享模式)</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">//AbstractQueuedSynchronizer.acquireShared()
 </span><span style="color:#75715e"></span>public final <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">acquireShared</span>(<span style="color:#66d9ef">int</span> arg) {
         <span style="color:#75715e">//&lt;1&gt; 调用#tryAcquireShared方法尝试获取锁 如果能获取那就返回1，反之-1
@@ -354,10 +351,9 @@ public <span style="color:#a6e22e">ReentrantReadWriteLock</span>(boolean fair) {
             <span style="color:#75715e">//&lt;2&gt; 如果无法获取锁，那么调用#doAcquireShared方法进行排队
 </span><span style="color:#75715e"></span>            doAcquireShared(arg);
     }
-</code></pre></div><h3 id="tryacquireshared-方法">tryAcquireShared 方法</h3>
-<blockquote>
+</code></pre></div><hr>
+<h4 id="tryacquireshared-方法">tryAcquireShared 方法</h4>
 <p>尝试索取锁</p>
-</blockquote>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">//ReentrantReadWriteLock.Sync.tryAcquireShared()
 </span><span style="color:#75715e"></span>protected final <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tryAcquireShared</span>(<span style="color:#66d9ef">int</span> unused) {
             <span style="color:#75715e">//当前线程
@@ -397,7 +393,8 @@ public <span style="color:#a6e22e">ReentrantReadWriteLock</span>(boolean fair) {
             <span style="color:#75715e">//4. 通过这个方法再去尝试获取读锁（如果之前其它线程获取了写锁，一样返回-1表示失败）
 </span><span style="color:#75715e"></span>            <span style="color:#66d9ef">return</span> fullTryAcquireShared(current);
         }
-</code></pre></div><h3 id="doacquireshared-方法">doAcquireShared 方法</h3>
+</code></pre></div><hr>
+<h4 id="doacquireshared-方法">doAcquireShared 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">//AbstractQueuedSynchronizer.doAcquireShared()
 </span><span style="color:#75715e"></span>private <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doAcquireShared</span>(<span style="color:#66d9ef">int</span> arg) {
         <span style="color:#75715e">//1. 封装一个shared 节点进入AQS的队列中
@@ -433,12 +430,10 @@ public <span style="color:#a6e22e">ReentrantReadWriteLock</span>(boolean fair) {
                 cancelAcquire(node);
         }
     }
-</code></pre></div><p>此方法与ReentrantLock中的方法#acquireQueued类似，以为的区别在于独占模式和共享模式
-在此方法中如果当前节点获取到了锁则会调用#setHeadAndPropagate方法依次唤醒后续堵塞住的读节点</p>
-<ul>
-<li>{% post_link ReentrantLock 源码分析 ReentrantLock 源码分析 %}</li>
-</ul>
-<h3 id="setheadandpropagate-方法">setHeadAndPropagate 方法</h3>
+</code></pre></div><p><strong>此方法与ReentrantLock中的方法<code>#acquireQueued</code>类似，以为的区别在于独占模式和共享模式
+在此方法中如果当前节点获取到了锁则会调用<code>#setHeadAndPropagate</code>方法依次唤醒后续堵塞住的读节点</strong></p>
+<hr>
+<h4 id="setheadandpropagate-方法">setHeadAndPropagate 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// AbstractQueuedSynchronizer.setHeadAndPropagate()
 </span><span style="color:#75715e"></span>private <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setHeadAndPropagate</span>(Node node, <span style="color:#66d9ef">int</span> propagate) {
         <span style="color:#75715e">//h为旧的头节点
@@ -456,10 +451,8 @@ public <span style="color:#a6e22e">ReentrantReadWriteLock</span>(boolean fair) {
 </span><span style="color:#75715e"></span>                doReleaseShared();
         }
     }
-</code></pre></div><h3 id="doreleaseshared-方法">doReleaseShared 方法</h3>
-<blockquote>
+</code></pre></div><h4 id="doreleaseshared-方法">doReleaseShared 方法</h4>
 <p>唤醒节点，只会唤醒一个</p>
-</blockquote>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// AbstractQueuedSynchronizer.doReleaseShared()
 </span><span style="color:#75715e"></span>private <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doReleaseShared</span>() {
         <span style="color:#66d9ef">for</span> (;;) {
@@ -483,7 +476,7 @@ public <span style="color:#a6e22e">ReentrantReadWriteLock</span>(boolean fair) {
 </span><span style="color:#75715e"></span>                <span style="color:#66d9ef">break</span>;
         }
     }
-</code></pre></div><p>在梳理一下大致逻辑：</p>
+</code></pre></div><p><strong>在梳理一下大致逻辑：</strong></p>
 <ol>
 <li>先调用#tryAcquireShared方法尝试获取锁，成功获取到直接返回</li>
 <li>没有获取到调用#doAcquireShared方法，会创建一个shared节点放入AQS中等待。</li>
@@ -492,7 +485,8 @@ public <span style="color:#a6e22e">ReentrantReadWriteLock</span>(boolean fair) {
 <li>如果头节点不是当前节点的上一个节点或者4失败，堵塞当前线程等待唤醒，防止死循环</li>
 <li>唤醒之后继续走4的逻辑</li>
 </ol>
-<h3 id="readlockunlock-方法">ReadLock.unlock 方法</h3>
+<hr>
+<h4 id="readlockunlock-方法">ReadLock.unlock 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">//ReentrantReadWriteLock.ReadLock.unlock
 </span><span style="color:#75715e"></span>public <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unlock</span>() {
             sync.releaseShared(<span style="color:#ae81ff">1</span>);
@@ -565,17 +559,16 @@ public <span style="color:#a6e22e">ReentrantReadWriteLock</span>(boolean fair) {
 </span><span style="color:#75715e"></span>                <span style="color:#66d9ef">break</span>;
         }
     }
-</code></pre></div><p>大致逻辑：</p>
+</code></pre></div><p><strong>大致逻辑：</strong></p>
 <ol>
 <li>将当前线程重入的次数减1</li>
 <li>将共享锁总共被获取的次数减1</li>
 <li>如果共享锁获取的次数减为0了，说明共享锁完全释放了，那就唤醒下一个节点</li>
 </ol>
+<hr>
 <h3 id="writelock-内部类">WriteLock 内部类</h3>
-<blockquote>
 <p>writeLock是一个独占模式的锁，可以参考ReentrantLock 一样的逻辑</p>
-</blockquote>
-<h3 id="writelocklock-方法">WriteLock.lock 方法</h3>
+<h4 id="writelocklock-方法">WriteLock.lock 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">//ReentrantReadWriteLock.WriteLock.lock()
 </span><span style="color:#75715e"></span>public <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">lock</span>() {
             sync.acquire(<span style="color:#ae81ff">1</span>);
@@ -586,7 +579,7 @@ public <span style="color:#a6e22e">ReentrantReadWriteLock</span>(boolean fair) {
             acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
             selfInterrupt();
     }
-</code></pre></div><p>大致过程这里在贴一下：</p>
+</code></pre></div><p><strong>大致过程这里在贴一下：</strong></p>
 <ol>
 <li>尝试获取锁；</li>
 <li>如果有读者占有着读锁，尝试获取写锁失败；</li>
@@ -596,10 +589,8 @@ public <span style="color:#a6e22e">ReentrantReadWriteLock</span>(boolean fair) {
 <li>尝试获取锁失败以后，进入队列排队，等待被唤醒；</li>
 <li>后续逻辑跟ReentrantLock是一致；</li>
 </ol>
-<h3 id="writelockunlock-方法">WriteLock.unlock 方法</h3>
-<blockquote>
+<h4 id="writelockunlock-方法">WriteLock.unlock 方法</h4>
 <p>也和ReentrantLoc的.unlock一样</p>
-</blockquote>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">unlock</span>() {
             sync.release(<span style="color:#ae81ff">1</span>);
         }
@@ -612,23 +603,20 @@ public final boolean <span style="color:#a6e22e">release</span>(<span style="col
         }
         <span style="color:#66d9ef">return</span> false;
     }
-</code></pre></div><p>写锁释放的过程大致为：</p>
+</code></pre></div><p><strong>写锁释放的过程大致为：</strong></p>
 <ol>
 <li>先尝试释放锁，即状态变量state的值减1；</li>
 <li>如果减为0了，说明完全释放了锁；</li>
 <li>完全释放了锁才唤醒下一个等待的节点；</li>
 </ol>
-<ul>
-<li>{% post_link ReentrantLock 源码分析 ReentrantLock 源码分析 %}</li>
-</ul>
-<h2 id="总结">总结</h2>
+<h3 id="总结">总结</h3>
 <ol>
-<li>ReentrantReadWriteLock 采用读写锁的思想，提交并发的吞吐量。建议在多读少写的情况下使用，因为写锁是互斥的。</li>
-<li>读锁使用的是共享锁，多个读锁可以一起获取锁，互相不会影响，即读读不互斥。</li>
-<li>读写、写读和写写是会互斥的，前者占有着锁，后者需要进入AQS队列中排队。</li>
-<li>多个连续的读线程是一个接着一个被唤醒的，而不是一次性唤醒所有读线程。</li>
-<li>只有多个读锁都完全释放了才会唤醒下一个写线程。</li>
-<li>只有写锁完全释放了才会唤醒下一个等待者，这个等待者有可能是读线程，也可能是写线程。</li>
+<li><strong>ReentrantReadWriteLock 采用读写锁的思想，提交并发的吞吐量。建议在多读少写的情况下使用，因为写锁是互斥的。</strong></li>
+<li><strong>读锁使用的是共享锁，多个读锁可以一起获取锁，互相不会影响，即读读不互斥。</strong></li>
+<li><strong>读写、写读和写写是会互斥的，前者占有着锁，后者需要进入AQS队列中排队。</strong></li>
+<li><strong>多个连续的读线程是一个接着一个被唤醒的，而不是一次性唤醒所有读线程。</strong></li>
+<li><strong>只有多个读锁都完全释放了才会唤醒下一个写线程。</strong></li>
+<li><strong>只有写锁完全释放了才会唤醒下一个等待者，这个等待者有可能是读线程，也可能是写线程。</strong></li>
 </ol>
 
                         </div>
@@ -675,11 +663,11 @@ public final boolean <span style="color:#a6e22e">release</span>(<span style="col
          
         <li><a href="/blog/reentrantlock-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fa fa-link"></i>ReentrantLock 源码分析</a></li>
          
+        <li><a href="/blog/semaphore-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fa fa-link"></i>Semaphore 源码分析</a></li>
+         
         <li><a href="/blog/threadpoolexecutor-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fa fa-link"></i>ThreadPoolExecutor 源码分析</a></li>
          
         <li><a href="/blog/scheduledthreadpoolexecutor-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fa fa-link"></i>ScheduledThreadPoolExecutor 源码分析</a></li>
-         
-        <li><a href="/blog/semaphore-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fa fa-link"></i>Semaphore 源码分析</a></li>
          
      </ul>
     </div>
@@ -702,13 +690,19 @@ public final boolean <span style="color:#a6e22e">release</span>(<span style="col
             <li><a href="/categories/aqs"><i class="fa fa-navicon"></i>aqs (6)</a>
             </li>
             
-            <li><a href="/categories/jdk%e6%ba%90%e7%a0%81"><i class="fa fa-navicon"></i>jdk源码 (11)</a>
+            <li><a href="/categories/pulsar"><i class="fa fa-navicon"></i>pulsar (6)</a>
             </li>
             
             <li><a href="/categories/%e5%88%86%e5%b8%83%e5%bc%8f"><i class="fa fa-navicon"></i>分布式 (2)</a>
             </li>
             
-            <li><a href="/categories/%e7%ba%bf%e7%a8%8b%e6%b1%a0"><i class="fa fa-navicon"></i>线程池 (4)</a>
+            <li><a href="/categories/%e5%8e%9f%e5%ad%90%e7%b1%bb"><i class="fa fa-navicon"></i>原子类 (2)</a>
+            </li>
+            
+            <li><a href="/categories/%e7%ba%bf%e7%a8%8b%e6%b1%a0"><i class="fa fa-navicon"></i>线程池 (3)</a>
+            </li>
+            
+            <li><a href="/categories/%e8%ae%be%e8%ae%a1%e6%a8%a1%e5%bc%8f"><i class="fa fa-navicon"></i>设计模式 (1)</a>
             </li>
             
             <li><a href="/categories/%e9%9b%86%e5%90%88"><i class="fa fa-navicon"></i>集合 (1)</a>
@@ -763,40 +757,40 @@ public final boolean <span style="color:#a6e22e">release</span>(<span style="col
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
-                        <a href="/blog/123/">
+                        <a href="/blog/atomicstampedreference-%E8%AF%A6%E8%A7%A3/">
                             
-                            <img src="/img/blog/banners/6ce41a46gy1g31wxsf5ibj20rs0ku10r.jpg" class="img-responsive" alt="123.md">
+                            <img src="/img/blog/banners/006tKfTcly1g0n3qqw0xqj31400u0hdt.jpg" class="img-responsive" alt="AtomicStampedReference 详解">
                             
                         </a>
                     </div>
                     <div class="name same-height-always">
-                        <h5><a href="/blog/123/">123.md</a></h5>
+                        <h5><a href="/blog/atomicstampedreference-%E8%AF%A6%E8%A7%A3/">AtomicStampedReference 详解</a></h5>
                     </div>
                 </div>
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
-                        <a href="/blog/condition-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+                        <a href="/blog/longadder-%E8%AF%A6%E8%A7%A3/">
                             
-                            <img src="/img/blog/banners/6ce41a46gy1g31wxsf5ibj20rs0ku10r.jpg" class="img-responsive" alt="Condition 源码分析">
+                            <img src="/img/blog/banners/006tKfTcly1g0d0qfcwpfj31400u0u11.jpg" class="img-responsive" alt="LongAdder 详解">
                             
                         </a>
                     </div>
                     <div class="name same-height-always">
-                        <h5><a href="/blog/condition-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Condition 源码分析</a></h5>
+                        <h5><a href="/blog/longadder-%E8%AF%A6%E8%A7%A3/">LongAdder 详解</a></h5>
                     </div>
                 </div>
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
-                        <a href="/blog/futuretask-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+                        <a href="/blog/apache-pulsar-topic-discovery/">
                             
-                            <img src="/img/blog/banners/006tNbRwly1fug0hms6vej31jk15ou0x.jpg" class="img-responsive" alt="FutureTask 源码分析">
+                            <img src="/img/blog/pulsar/pulsar.svg" class="img-responsive" alt="Apache Pulsar - Topic Discovery">
                             
                         </a>
                     </div>
                     <div class="name same-height-always">
-                        <h5><a href="/blog/futuretask-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">FutureTask 源码分析</a></h5>
+                        <h5><a href="/blog/apache-pulsar-topic-discovery/">Apache Pulsar - Topic Discovery</a></h5>
                     </div>
                 </div>
                 

@@ -10,7 +10,7 @@
   <meta name="author" content="Siran Yao(姚毅晨)" />
 
   
-  <meta name="keywords" content="线程池, Jdk源码, 基础">
+  <meta name="keywords" content="线程池, 基础">
   
 
   <meta name="generator" content="Hugo 0.65.2" />
@@ -251,7 +251,7 @@ autocomplete('#aa-search-input',
                             
                             
                             |
-                            5500字 | 阅读大约需要11分钟
+                            5300字 | 阅读大约需要11分钟
                             </div>
                             
                             
@@ -273,7 +273,7 @@ autocomplete('#aa-search-input',
                             
                         </div>
                         <div id="post-content">
-                          <h2 id="问题">问题</h2>
+                          <h3 id="问题">问题</h3>
 <ul>
 <li>ScheduledThreadPoolExecutor 与 Timer 执行定时任务比较，ScheduledThreadPoolExecutor 有什么优势？</li>
 <li>ScheduledThreadPoolExecutor 与 ThreadPoolExecutor 的区别？</li>
@@ -281,7 +281,8 @@ autocomplete('#aa-search-input',
 <li>ScheduledThreadPoolExecutor 如何实现异步执行并获取结果的？</li>
 <li>ScheduledThreadPoolExecutor 中 DelayedWorkQueue的数据结构是什么？</li>
 </ul>
-<h2 id="简述">简述</h2>
+<hr>
+<h3 id="简述">简述</h3>
 <blockquote>
 <p>ScheduledThreadPoolExecutor 继承 ThreadPoolExecutor 重用线程池的功能：</p>
 </blockquote>
@@ -301,10 +302,12 @@ autocomplete('#aa-search-input',
 <li>Timer 的任务队列也是使用的二叉堆，处于栈顶的是最快要执行的任务(最小堆)</li>
 <li>Timer 作为单线程，如果执行任务的过程中发生错误，那么会导致接下来的任务无法执行</li>
 </ul>
-<h2 id="源码分析">源码分析</h2>
-<h3 id="类图">类图</h3>
-<!-- raw HTML omitted -->
-<h3 id="重要参数以及相关方法">重要参数以及相关方法</h3>
+<hr>
+<h3 id="源码分析">源码分析</h3>
+<h4 id="类图">类图</h4>
+<p><img src="/img/blog/%E7%BA%BF%E7%A8%8B%E6%B1%A0/ScheduledThreadPool%E7%B1%BB%E5%9B%BE.png" alt=""></p>
+<hr>
+<h4 id="重要参数以及相关方法">重要参数以及相关方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">//当调用 #shutdown方法的时候是否要继续执行存在的周期性任务  默认是false
 </span><span style="color:#75715e"></span>private <span style="color:#66d9ef">volatile</span> boolean continueExistingPeriodicTasksAfterShutdown;
 
@@ -345,7 +348,8 @@ public <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setRe
 public boolean <span style="color:#a6e22e">getRemoveOnCancelPolicy</span>() {
         <span style="color:#66d9ef">return</span> removeOnCancel;
     }
-</code></pre></div><h3 id="构造方法">构造方法</h3>
+</code></pre></div><hr>
+<h4 id="构造方法">构造方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public <span style="color:#a6e22e">ScheduledThreadPoolExecutor</span>(<span style="color:#66d9ef">int</span> corePoolSize) {
         super(corePoolSize, Integer.MAX_VALUE, <span style="color:#ae81ff">0</span>, NANOSECONDS,
               new DelayedWorkQueue());
@@ -366,10 +370,10 @@ public <span style="color:#a6e22e">ScheduledThreadPoolExecutor</span>(<span styl
         super(corePoolSize, Integer.MAX_VALUE, <span style="color:#ae81ff">0</span>, NANOSECONDS,
               new DelayedWorkQueue(), threadFactory, handler);
     }
-</code></pre></div><p>因为 ScheduledThreadPoolExecutor 继承 ThreadPoolExecutor，所以这里都是调用 ThreadPoolExecutor 的构造方法。</p>
-<p>{% post_link ThreadPoolExecutor源码分析 ThreadPoolExecutor源码分析 %}</p>
+</code></pre></div><p><strong>因为 ScheduledThreadPoolExecutor 继承 ThreadPoolExecutor，所以这里都是调用 ThreadPoolExecutor 的构造方法。</strong></p>
+<hr>
 <h3 id="核心方法">核心方法</h3>
-<h3 id="schedule-方法">schedule 方法</h3>
+<h4 id="schedule-方法">schedule 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public ScheduledFuture<span style="color:#f92672">&lt;?&gt;</span> schedule(Runnable command,
                                        <span style="color:#66d9ef">long</span> delay,
                                        TimeUnit unit) {
@@ -395,19 +399,14 @@ public <span style="color:#f92672">&lt;</span>V<span style="color:#f92672">&gt;<
         delayedExecute(t);
         <span style="color:#66d9ef">return</span> t;
     }
-</code></pre></div><blockquote>
-<p>这两个 schedule 方法两个重载方法，只有第一个参数不同。
-Runnable 和 Callable的区别是：Runnable 没有返回值，无法抛出 Exception</p>
-</blockquote>
+</code></pre></div><p><strong>这两个 schedule 方法两个重载方法，只有第一个参数不同。Runnable 和 Callable的区别是：Runnable 没有返回值，无法抛出 Exception</strong></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public interface Runnable {
     public abstract <span style="color:#66d9ef">void</span> run();
 }
 public interface Callable<span style="color:#f92672">&lt;</span>V<span style="color:#f92672">&gt;</span> {
     V call() throws Exception;
 }
-</code></pre></div><blockquote>
-<p>在 schedule 方法中&lt;1&gt;处 通过传入一个任务然后调用 #decorateTask 方法封装成 RunnableScheduledFuture</p>
-</blockquote>
+</code></pre></div><p><strong>在 schedule 方法中&lt;1&gt;处 通过传入一个任务然后调用 #decorateTask 方法封装成 RunnableScheduledFuture</strong></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">//修改或替换用于执行 runnable 的任务。此方法可重写用于管理内部任务的具体类。默认实现只返回给定任务。
 </span><span style="color:#75715e"></span>protected <span style="color:#f92672">&lt;</span>V<span style="color:#f92672">&gt;</span> RunnableScheduledFuture<span style="color:#f92672">&lt;</span>V<span style="color:#f92672">&gt;</span> decorateTask(
     Runnable runnable, RunnableScheduledFuture<span style="color:#f92672">&lt;</span>V<span style="color:#f92672">&gt;</span> task) {
@@ -418,14 +417,10 @@ public interface Callable<span style="color:#f92672">&lt;</span>V<span style="co
     Callable<span style="color:#f92672">&lt;</span>V<span style="color:#f92672">&gt;</span> callable, RunnableScheduledFuture<span style="color:#f92672">&lt;</span>V<span style="color:#f92672">&gt;</span> task) {
     <span style="color:#66d9ef">return</span> task;
 }
-</code></pre></div><blockquote>
-<p>然后调用 #delayedExecute 方法来执行延迟任务
-最后返回 #ScheduledFuture 对象</p>
-</blockquote>
-<h3 id="scheduleatfixedrate-方法">scheduleAtFixedRate 方法</h3>
-<blockquote>
-<p>下一次执行时间相当于是上一次的执行时间加上period，它是采用已固定的频率来执行任务</p>
-</blockquote>
+</code></pre></div><p><strong>然后调用 #delayedExecute 方法来执行延迟任务最后返回 #ScheduledFuture 对象</strong></p>
+<hr>
+<h4 id="scheduleatfixedrate-方法">scheduleAtFixedRate 方法</h4>
+<p><strong>下一次执行时间相当于是上一次的执行时间加上period，它是采用已固定的频率来执行任务</strong></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public ScheduledFuture<span style="color:#f92672">&lt;?&gt;</span> scheduleAtFixedRate(Runnable command,
                                                   <span style="color:#66d9ef">long</span> initialDelay,
                                                   <span style="color:#66d9ef">long</span> period,
@@ -447,10 +442,9 @@ public interface Callable<span style="color:#f92672">&lt;</span>V<span style="co
 </span><span style="color:#75715e"></span>        delayedExecute(t);
         <span style="color:#66d9ef">return</span> t;
     }
-</code></pre></div><h3 id="schedulewithfixeddelay-方法">scheduleWithFixedDelay 方法</h3>
-<blockquote>
-<p>与scheduleAtFixedRate方法不同的是，下一次执行时间是上一次任务执行完的系统时间加上period，因而具体执行时间不是固定的，但周期是固定的，是采用相对固定的延迟来执行任务</p>
-</blockquote>
+</code></pre></div><hr>
+<h4 id="schedulewithfixeddelay-方法">scheduleWithFixedDelay 方法</h4>
+<p><strong>与scheduleAtFixedRate方法不同的是，下一次执行时间是上一次任务执行完的系统时间加上period，因而具体执行时间不是固定的，但周期是固定的，是采用相对固定的延迟来执行任务</strong></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public ScheduledFuture<span style="color:#f92672">&lt;?&gt;</span> scheduleWithFixedDelay(Runnable command,
                                                      <span style="color:#66d9ef">long</span> initialDelay,
                                                      <span style="color:#66d9ef">long</span> delay,
@@ -472,12 +466,14 @@ public interface Callable<span style="color:#f92672">&lt;</span>V<span style="co
 </span><span style="color:#75715e"></span>        delayedExecute(t);
         <span style="color:#66d9ef">return</span> t;
     }
-</code></pre></div><h3 id="execute-方法">execute 方法</h3>
+</code></pre></div><hr>
+<h4 id="execute-方法">execute 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">//立即执行 也就是把 delay 时间置为 0
 </span><span style="color:#75715e"></span>public <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">execute</span>(Runnable command) {
         schedule(command, <span style="color:#ae81ff">0</span>, NANOSECONDS);
     }
-</code></pre></div><h3 id="submit-方法">submit 方法</h3>
+</code></pre></div><hr>
+<h4 id="submit-方法">submit 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">//也是调用了 schedule 方法
 </span><span style="color:#75715e"></span>public Future<span style="color:#f92672">&lt;?&gt;</span> submit(Runnable task) {
         <span style="color:#66d9ef">return</span> schedule(task, <span style="color:#ae81ff">0</span>, NANOSECONDS);
@@ -488,7 +484,8 @@ public <span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;<
 public <span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> Future<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> submit(Callable<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span> task) {
         <span style="color:#66d9ef">return</span> schedule(task, <span style="color:#ae81ff">0</span>, NANOSECONDS);
     }
-</code></pre></div><h3 id="shutdownshutdownnowgetqueue-方法">shutdown、shutdownNow、getQueue 方法</h3>
+</code></pre></div><hr>
+<h4 id="shutdownshutdownnowgetqueue-方法">shutdown、shutdownNow、getQueue 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">shutdown</span>() {
         super.shutdown();
     }
@@ -498,14 +495,10 @@ public List<span style="color:#f92672">&lt;</span>Runnable<span style="color:#f9
 public BlockingQueue<span style="color:#f92672">&lt;</span>Runnable<span style="color:#f92672">&gt;</span> getQueue() {
         <span style="color:#66d9ef">return</span> super.getQueue();
     }
-</code></pre></div><blockquote>
-<p>这些方法都是直接调用父类 ThreadPoolExecutor 中的实现。</p>
-</blockquote>
-<p>{% post_link ThreadPoolExecutor源码分析 ThreadPoolExecutor源码分析 %}</p>
-<h3 id="onshutdown-方法">onShutdown 方法</h3>
-<blockquote>
-<p>复写 ThreadPoolExecutor 中的 onShutdown 方法</p>
-</blockquote>
+</code></pre></div><p><strong>这些方法都是直接调用父类 ThreadPoolExecutor 中的实现。</strong></p>
+<hr>
+<h4 id="onshutdown-方法">onShutdown 方法</h4>
+<p><strong>复写 ThreadPoolExecutor 中的 onShutdown 方法</strong></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#960050;background-color:#1e0010">@</span>Override <span style="color:#66d9ef">void</span> onShutdown() {
         BlockingQueue<span style="color:#f92672">&lt;</span>Runnable<span style="color:#f92672">&gt;</span> q <span style="color:#f92672">=</span> super.getQueue();
         <span style="color:#75715e">// 获取在线程池已 shutdown 的情况下是否继续执行现有延迟任务
@@ -539,10 +532,9 @@ public BlockingQueue<span style="color:#f92672">&lt;</span>Runnable<span style="
         }
         tryTerminate();
     }
-</code></pre></div><h3 id="delayedexecute-方法">delayedExecute 方法</h3>
-<blockquote>
-<p>上述的调度方法最终都是调用此方法来执行延迟任务</p>
-</blockquote>
+</code></pre></div><hr>
+<h4 id="delayedexecute-方法">delayedExecute 方法</h4>
+<p><strong>上述的调度方法最终都是调用此方法来执行延迟任务</strong></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">private <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">delayedExecute</span>(RunnableScheduledFuture<span style="color:#f92672">&lt;?&gt;</span> task) {
         <span style="color:#75715e">//&lt;1&gt; 判断是否已经处于shutdown状态
 </span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> (isShutdown())
@@ -562,15 +554,12 @@ public BlockingQueue<span style="color:#f92672">&lt;</span>Runnable<span style="
 </span><span style="color:#75715e"></span>                ensurePrestart();
         }
     }
-</code></pre></div><blockquote>
-<p>也就是说 ScheduledThreadPoolExecutor 最终执行任务其实和还是是让 ThreadPoolExecutor 去执行
+</code></pre></div><p><strong>也就是说 ScheduledThreadPoolExecutor 最终执行任务其实和还是是让 ThreadPoolExecutor 去执行
 ScheduledThreadPoolExecutor 和 ThreadPoolExecutor 的区别在于，ThreadPoolExecutor 是通过不断的从阻塞队列中取出 Runnable 类型的任务并执行。
-而 ScheduledThreadPoolExecutor 是不断的从延迟队列 DelayedWorkQueue 中取出 ScheduledFutureTask 类型的任务来执行，来实现周期性调度的功能。</p>
-</blockquote>
-<h3 id="scheduledfuturetask">ScheduledFutureTask</h3>
-<blockquote>
-<p>ScheduledThreadPoolExecutor 的内部类</p>
-</blockquote>
+而 ScheduledThreadPoolExecutor 是不断的从延迟队列 DelayedWorkQueue 中取出 ScheduledFutureTask 类型的任务来执行，来实现周期性调度的功能。</strong></p>
+<hr>
+<h4 id="scheduledfuturetask">ScheduledFutureTask</h4>
+<p><strong>ScheduledThreadPoolExecutor 的内部类</strong></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">    private class ScheduledFutureTask<span style="color:#f92672">&lt;</span>V<span style="color:#f92672">&gt;</span>
             extends FutureTask<span style="color:#f92672">&lt;</span>V<span style="color:#f92672">&gt;</span> implements RunnableScheduledFuture<span style="color:#f92672">&lt;</span>V<span style="color:#f92672">&gt;</span> {
         <span style="color:#75715e">//任务的序号 不断自增 FIFO
@@ -667,17 +656,12 @@ ScheduledThreadPoolExecutor 和 ThreadPoolExecutor 的区别在于，ThreadPoolE
             }
         }
     }
-</code></pre></div><p>{% post_link FutureTask源码分析 FutureTask源码分析 %}</p>
-<h3 id="delayedworkqueue">DelayedWorkQueue</h3>
-<blockquote>
-<p>ScheduledThreadPoolExecutor之所以要自己实现阻塞的工作队列，在执行定时任务的时候，每个任务的执行时间都不同，
+</code></pre></div><hr>
+<h4 id="delayedworkqueue">DelayedWorkQueue</h4>
+<p><strong>ScheduledThreadPoolExecutor之所以要自己实现阻塞的工作队列，在执行定时任务的时候，每个任务的执行时间都不同，
 所以DelayedWorkQueue的工作就是按照执行时间的升序来排列，执行时间距离当前时间越近的任务在队列的前面,那这种优先队列的模式。
-它可以保证每次出队的任务都是当前队列中执行时间最靠前的，由于它是基于堆结构的队列，堆结构在执行插入和删除操作时的最坏时间复杂度是 O(logN)。</p>
-</blockquote>
-<p>二叉堆这种数据结构可以看以下文章，都是一样的道理：</p>
-<ul>
-<li>{% post_link PriorityQueue源码分析 PriorityQueue源码分析 %}</li>
-</ul>
+它可以保证每次出队的任务都是当前队列中执行时间最靠前的，由于它是基于堆结构的队列，堆结构在执行插入和删除操作时的最坏时间复杂度是 O(logN)。</strong></p>
+<hr>
 <h4 id="参数">参数</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">//初始容量
 </span><span style="color:#75715e"></span>private <span style="color:#66d9ef">static</span> final <span style="color:#66d9ef">int</span> INITIAL_CAPACITY <span style="color:#f92672">=</span> <span style="color:#ae81ff">16</span>;
@@ -691,10 +675,9 @@ ScheduledThreadPoolExecutor 和 ThreadPoolExecutor 的区别在于，ThreadPoolE
 </span><span style="color:#75715e"></span>private Thread leader <span style="color:#f92672">=</span> null;
 <span style="color:#75715e">// 条件队列：当较新的任务在队列的头部可用时，或者新线程可能需要成为leader，则通过该条件发出信号
 </span><span style="color:#75715e"></span>private final Condition available <span style="color:#f92672">=</span> lock.newCondition();
-</code></pre></div><blockquote>
-<p>所有线程会有三种身份中的一种：leader和follower，以及一个干活中的状态：proccesser。它的基本原则就是，永远最多只有一个leader。而所有follower都在等待成为leader。线程池启动时会自动产生一个Leader负责等待网络IO事件，当有一个事件产生时，Leader线程首先通知一个Follower线程将其提拔为新的Leader，然后自己就去干活了，去处理这个网络事件，处理完毕后加入Follower线程等待队列，等待下次成为Leader。这种方法可以增强CPU高速缓存相似性，及消除动态内存分配和线程间的数据交换。</p>
-</blockquote>
+</code></pre></div><p><strong>所有线程会有三种身份中的一种：leader和follower，以及一个干活中的状态：proccesser。它的基本原则就是，永远最多只有一个leader。而所有follower都在等待成为leader。线程池启动时会自动产生一个Leader负责等待网络IO事件，当有一个事件产生时，Leader线程首先通知一个Follower线程将其提拔为新的Leader，然后自己就去干活了，去处理这个网络事件，处理完毕后加入Follower线程等待队列，等待下次成为Leader。这种方法可以增强CPU高速缓存相似性，及消除动态内存分配和线程间的数据交换。</strong></p>
 <p><a href="https://blog.csdn.net/goldlevi/article/details/7705180">参考自https://blog.csdn.net/goldlevi/article/details/7705180</a></p>
+<hr>
 <h4 id="offer-方法">offer 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public boolean <span style="color:#a6e22e">offer</span>(Runnable x) {
             <span style="color:#66d9ef">if</span> (x <span style="color:#f92672">==</span> null)
@@ -728,7 +711,8 @@ ScheduledThreadPoolExecutor 和 ThreadPoolExecutor 的区别在于，ThreadPoolE
             }
             <span style="color:#66d9ef">return</span> true;
         }
-</code></pre></div><h4 id="take-方法">take 方法</h4>
+</code></pre></div><hr>
+<h4 id="take-方法">take 方法</h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public RunnableScheduledFuture<span style="color:#f92672">&lt;?&gt;</span> take() throws InterruptedException {
             final ReentrantLock lock <span style="color:#f92672">=</span> this.lock;
             lock.lockInterruptibly();
@@ -781,13 +765,13 @@ ScheduledThreadPoolExecutor 和 ThreadPoolExecutor 的区别在于，ThreadPoolE
 所以，为了不让多个线程频繁的做无用的定时等待，这里增加了leader，如果leader不为空，则说明队列中第一个节点已经在等待出队，这时其它的线程会一直阻塞，减少了无用的阻塞（注意，在finally中调用了signal()来唤醒一个线程，而不是signalAll()）。</p>
 </blockquote>
 <p>其他方法和PriorityQueue 以及 DelayQueue都类似。</p>
-<h2 id="总结">总结</h2>
+<h3 id="总结">总结</h3>
 <ul>
-<li>ScheduledThreadPoolExecutor 继承自 ThreadPoolExecutor，所以它也是一个线程池，也有 corePoolSize 和 workQueue，ScheduledThreadPoolExecutor 特殊的地方在于，自己实现了优先工作队列 DelayedWorkQueue</li>
-<li>ScheduledThreadPoolExecutor 实现了 ScheduledExecutorService，所以就有了任务调度的方法，如schedule，scheduleAtFixedRate 和 scheduleWithFixedDelay</li>
-<li>内部类ScheduledFutureTask 继承自 FutureTask，实现了任务的异步执行并且可以获取返回结果。同时也实现了Delayed接口，可以通过getDelay方法获取将要执行的时间间隔</li>
-<li>周期任务的执行其实是调用了FutureTask类中的runAndReset方法，每次执行完设置下一次的执行时间周而复始</li>
-<li>DelayedWorkQueue的数据结构，它是一个基于最小堆结构的优先队列，并且每次出队时能够保证取出的任务是当前队列中下次执行时间最小的任务。堆结构只保证了子节点的值要比父节点的值要大，但是不保证在整个堆中都是有序的</li>
+<li><strong>ScheduledThreadPoolExecutor 继承自 ThreadPoolExecutor，所以它也是一个线程池，也有 corePoolSize 和 workQueue，ScheduledThreadPoolExecutor 特殊的地方在于，自己实现了优先工作队列 DelayedWorkQueue</strong></li>
+<li><strong>ScheduledThreadPoolExecutor 实现了 ScheduledExecutorService，所以就有了任务调度的方法，如schedule，scheduleAtFixedRate 和 scheduleWithFixedDelay</strong></li>
+<li><strong>内部类ScheduledFutureTask 继承自 FutureTask，实现了任务的异步执行并且可以获取返回结果。同时也实现了Delayed接口，可以通过getDelay方法获取将要执行的时间间隔</strong></li>
+<li><strong>周期任务的执行其实是调用了FutureTask类中的runAndReset方法，每次执行完设置下一次的执行时间周而复始</strong></li>
+<li><strong>DelayedWorkQueue的数据结构，它是一个基于最小堆结构的优先队列，并且每次出队时能够保证取出的任务是当前队列中下次执行时间最小的任务。堆结构只保证了子节点的值要比父节点的值要大，但是不保证在整个堆中都是有序的</strong></li>
 </ul>
 
                         </div>
@@ -853,13 +837,19 @@ ScheduledThreadPoolExecutor 和 ThreadPoolExecutor 的区别在于，ThreadPoolE
             <li><a href="/categories/aqs"><i class="fa fa-navicon"></i>aqs (6)</a>
             </li>
             
-            <li><a href="/categories/jdk%e6%ba%90%e7%a0%81"><i class="fa fa-navicon"></i>jdk源码 (11)</a>
+            <li><a href="/categories/pulsar"><i class="fa fa-navicon"></i>pulsar (6)</a>
             </li>
             
             <li><a href="/categories/%e5%88%86%e5%b8%83%e5%bc%8f"><i class="fa fa-navicon"></i>分布式 (2)</a>
             </li>
             
-            <li><a href="/categories/%e7%ba%bf%e7%a8%8b%e6%b1%a0"><i class="fa fa-navicon"></i>线程池 (4)</a>
+            <li><a href="/categories/%e5%8e%9f%e5%ad%90%e7%b1%bb"><i class="fa fa-navicon"></i>原子类 (2)</a>
+            </li>
+            
+            <li><a href="/categories/%e7%ba%bf%e7%a8%8b%e6%b1%a0"><i class="fa fa-navicon"></i>线程池 (3)</a>
+            </li>
+            
+            <li><a href="/categories/%e8%ae%be%e8%ae%a1%e6%a8%a1%e5%bc%8f"><i class="fa fa-navicon"></i>设计模式 (1)</a>
             </li>
             
             <li><a href="/categories/%e9%9b%86%e5%90%88"><i class="fa fa-navicon"></i>集合 (1)</a>
@@ -914,40 +904,40 @@ ScheduledThreadPoolExecutor 和 ThreadPoolExecutor 的区别在于，ThreadPoolE
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
-                        <a href="/blog/123/">
+                        <a href="/blog/atomicstampedreference-%E8%AF%A6%E8%A7%A3/">
                             
-                            <img src="/img/blog/banners/6ce41a46gy1g31wxsf5ibj20rs0ku10r.jpg" class="img-responsive" alt="123.md">
+                            <img src="/img/blog/banners/006tKfTcly1g0n3qqw0xqj31400u0hdt.jpg" class="img-responsive" alt="AtomicStampedReference 详解">
                             
                         </a>
                     </div>
                     <div class="name same-height-always">
-                        <h5><a href="/blog/123/">123.md</a></h5>
+                        <h5><a href="/blog/atomicstampedreference-%E8%AF%A6%E8%A7%A3/">AtomicStampedReference 详解</a></h5>
                     </div>
                 </div>
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
-                        <a href="/blog/condition-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+                        <a href="/blog/longadder-%E8%AF%A6%E8%A7%A3/">
                             
-                            <img src="/img/blog/banners/6ce41a46gy1g31wxsf5ibj20rs0ku10r.jpg" class="img-responsive" alt="Condition 源码分析">
+                            <img src="/img/blog/banners/006tKfTcly1g0d0qfcwpfj31400u0u11.jpg" class="img-responsive" alt="LongAdder 详解">
                             
                         </a>
                     </div>
                     <div class="name same-height-always">
-                        <h5><a href="/blog/condition-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">Condition 源码分析</a></h5>
+                        <h5><a href="/blog/longadder-%E8%AF%A6%E8%A7%A3/">LongAdder 详解</a></h5>
                     </div>
                 </div>
                 
                 <div class="item same-height-row clearfix">
                     <div class="image same-height-always">
-                        <a href="/blog/futuretask-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+                        <a href="/blog/apache-pulsar-topic-discovery/">
                             
-                            <img src="/img/blog/banners/006tNbRwly1fug0hms6vej31jk15ou0x.jpg" class="img-responsive" alt="FutureTask 源码分析">
+                            <img src="/img/blog/pulsar/pulsar.svg" class="img-responsive" alt="Apache Pulsar - Topic Discovery">
                             
                         </a>
                     </div>
                     <div class="name same-height-always">
-                        <h5><a href="/blog/futuretask-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">FutureTask 源码分析</a></h5>
+                        <h5><a href="/blog/apache-pulsar-topic-discovery/">Apache Pulsar - Topic Discovery</a></h5>
                     </div>
                 </div>
                 

@@ -12,15 +12,6 @@
     
     
     <item>
-      <title>123.md</title>
-      <link>/blog/123/</link>
-      <pubDate>Sun, 01 Mar 2020 19:12:42 +0800</pubDate>
-      
-      <guid>/blog/123/</guid>
-      <description>Condition可以替代传统的Object中的wait()、notify()和notifyAll()方法来实现线程间的通信，使线程间协作更加安全和高效。</description>
-    </item>
-    
-    <item>
       <title>Condition 源码分析</title>
       <link>/blog/condition-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
       <pubDate>Sun, 01 Mar 2020 19:12:42 +0800</pubDate>
@@ -63,6 +54,15 @@
       
       <guid>/blog/reentrantlock-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
       <description>通常使用锁就是 synchronized，经过 jdk 的一系列优化引入偏向锁、轻量级锁、重量级锁等概念，性能也是有很大的提高。</description>
+    </item>
+    
+    <item>
+      <title>Semaphore 源码分析</title>
+      <link>/blog/semaphore-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <pubDate>Tue, 05 Jun 2018 19:12:42 +0800</pubDate>
+      
+      <guid>/blog/semaphore-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <description>基于微服务的架构是未来的趋势，但是实现这种架构会面临许多困难。现代应用架构远比过去的架构复杂，因此实现微服务架构将会带来了一系列特殊的挑战，而服务网格可以帮我们解决很多问题。</description>
     </item>
     
   </channel>
