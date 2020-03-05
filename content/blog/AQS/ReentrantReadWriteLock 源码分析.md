@@ -6,20 +6,19 @@ banner: "/img/blog/banners/00704eQkgy1fs77zshhihj30rs0kunab.jpg"
 author: "Siran"
 summary: "ReentrantReadWriteLock 是什么?"
 tags: ["AQS"]
-categories: ["AQS","Jdk源码"]
+categories: ["AQS"]
 keywords: ["AQS","Jdk源码","基础"]
 ---
 
-## 问题
+### 问题
 * ReentrantReadWriteLock 是什么
 * ReentrantReadWriteLock 具有哪些特性？
 * ReentrantReadWriteLock是怎么实现读写锁的？
 * 如何使用ReentrantReadWriteLock实现高效安全的TreeMap？
+****
 
-## 简述
-
-## ReentrantReadWriteLock 使用
-在ReentrantReadWriteLock类中javadoc中的例子，代码如下：
+### ReentrantReadWriteLock 使用
+在`ReentrantReadWriteLock`类中`javadoc`中的例子，代码如下：
 ```c
 class RWDictionary {
     private final Map<String, Data> m = new TreeMap<String, Data>();
@@ -51,8 +50,9 @@ class RWDictionary {
     }
   }
 ```
-## 源码分析
-### 主要属性
+****
+### 源码分析
+#### 主要属性
 ```c
     // 内部类  读锁
     private final ReentrantReadWriteLock.ReadLock readerLock;
@@ -61,8 +61,9 @@ class RWDictionary {
     // 内部类 继承 AbstractQueuedSynchronizer 
     final Sync sync;
 ```
-### 构造函数
-> 和ReentrantLock一样也分公平锁和非公平锁，默认是非公平锁。
+****
+#### 构造函数
+和`ReentrantLock`一样也分公平锁和非公平锁，默认是非公平锁。
 ```c
 public ReentrantReadWriteLock() {
         this(false);
@@ -73,21 +74,21 @@ public ReentrantReadWriteLock(boolean fair) {
         writerLock = new WriteLock(this);
     }
 ```
-在创建 ReentrantReadWriteLock 的时候会初始化两个内部类 ReadLock 和 WriteLock。
-此外的另外三个内部类Sync、FairSync、NonfairSync 在ReentrantLock中已经分析过了详情可看下面这篇文章：
+**在创建 ReentrantReadWriteLock 的时候会初始化两个内部类 ReadLock 和 WriteLock。
+此外的另外三个内部类Sync、FairSync、NonfairSync 在ReentrantLock中已经分析过了详情可看下面这篇文章：**
 
-* {% post_link ReentrantLock 源码分析 ReentrantLock 源码分析 %}
-
+****
 ### ReadLock 内部类
-### ReadLock.lock 方法
+#### ReadLock.lock 方法
 ```c
 //ReentrantReadWriteLock.ReadLock.lock()
 public void lock() {
             sync.acquireShared(1);
         }
 ```
-### acquireShared 方法
-> ReadLock.lock 方法会调用 AQS中的acquireShared方法(共享模式)
+****
+#### acquireShared 方法
+`ReadLock.lock` 方法会调用 AQS中的`acquireShared`方法(共享模式)
 ```c
 //AbstractQueuedSynchronizer.acquireShared()
 public final void acquireShared(int arg) {
@@ -97,8 +98,9 @@ public final void acquireShared(int arg) {
             doAcquireShared(arg);
     }
 ```
-### tryAcquireShared 方法
-> 尝试索取锁
+****
+#### tryAcquireShared 方法
+尝试索取锁
 ```c
 //ReentrantReadWriteLock.Sync.tryAcquireShared()
 protected final int tryAcquireShared(int unused) {
@@ -140,8 +142,8 @@ protected final int tryAcquireShared(int unused) {
             return fullTryAcquireShared(current);
         }
 ```
-
-### doAcquireShared 方法
+****
+#### doAcquireShared 方法
 ```c
 //AbstractQueuedSynchronizer.doAcquireShared()
 private void doAcquireShared(int arg) {
@@ -179,11 +181,10 @@ private void doAcquireShared(int arg) {
         }
     }
 ```
-此方法与ReentrantLock中的方法#acquireQueued类似，以为的区别在于独占模式和共享模式
-在此方法中如果当前节点获取到了锁则会调用#setHeadAndPropagate方法依次唤醒后续堵塞住的读节点
-* {% post_link ReentrantLock 源码分析 ReentrantLock 源码分析 %}
-
-### setHeadAndPropagate 方法
+**此方法与ReentrantLock中的方法`#acquireQueued`类似，以为的区别在于独占模式和共享模式
+在此方法中如果当前节点获取到了锁则会调用`#setHeadAndPropagate`方法依次唤醒后续堵塞住的读节点**
+****
+#### setHeadAndPropagate 方法
 ```c
 // AbstractQueuedSynchronizer.setHeadAndPropagate()
 private void setHeadAndPropagate(Node node, int propagate) {
@@ -203,8 +204,8 @@ private void setHeadAndPropagate(Node node, int propagate) {
         }
     }
 ```
-### doReleaseShared 方法
-> 唤醒节点，只会唤醒一个
+#### doReleaseShared 方法
+唤醒节点，只会唤醒一个
 ```c
 // AbstractQueuedSynchronizer.doReleaseShared()
 private void doReleaseShared() {
@@ -230,7 +231,7 @@ private void doReleaseShared() {
         }
     }
 ```
-在梳理一下大致逻辑：
+**在梳理一下大致逻辑：**
 
 1. 先调用#tryAcquireShared方法尝试获取锁，成功获取到直接返回
 2. 没有获取到调用#doAcquireShared方法，会创建一个shared节点放入AQS中等待。
@@ -239,7 +240,8 @@ private void doReleaseShared() {
 4. 如果头节点不是当前节点的上一个节点或者4失败，堵塞当前线程等待唤醒，防止死循环
 5. 唤醒之后继续走4的逻辑
 
-### ReadLock.unlock 方法
+****
+#### ReadLock.unlock 方法
 ```c
 //ReentrantReadWriteLock.ReadLock.unlock
 public void unlock() {
@@ -314,14 +316,14 @@ private void doReleaseShared() {
         }
     }
 ```
-大致逻辑：
+**大致逻辑：**
 1. 将当前线程重入的次数减1
 2. 将共享锁总共被获取的次数减1
 3. 如果共享锁获取的次数减为0了，说明共享锁完全释放了，那就唤醒下一个节点
-
+****
 ### WriteLock 内部类
-> writeLock是一个独占模式的锁，可以参考ReentrantLock 一样的逻辑
-### WriteLock.lock 方法
+writeLock是一个独占模式的锁，可以参考ReentrantLock 一样的逻辑
+#### WriteLock.lock 方法
 ```c
 //ReentrantReadWriteLock.WriteLock.lock()
 public void lock() {
@@ -334,7 +336,7 @@ public final void acquire(int arg) {
             selfInterrupt();
     }
 ```
-大致过程这里在贴一下：
+**大致过程这里在贴一下：**
 
 1. 尝试获取锁；
 2. 如果有读者占有着读锁，尝试获取写锁失败；
@@ -344,8 +346,8 @@ public final void acquire(int arg) {
 6. 尝试获取锁失败以后，进入队列排队，等待被唤醒；
 7. 后续逻辑跟ReentrantLock是一致；
 
-### WriteLock.unlock 方法
-> 也和ReentrantLoc的.unlock一样
+#### WriteLock.unlock 方法
+也和ReentrantLoc的.unlock一样
 ```c
 public void unlock() {
             sync.release(1);
@@ -360,16 +362,15 @@ public final boolean release(int arg) {
         return false;
     }
 ```
-写锁释放的过程大致为：
+**写锁释放的过程大致为：**
 1. 先尝试释放锁，即状态变量state的值减1；
 2. 如果减为0了，说明完全释放了锁；
 3. 完全释放了锁才唤醒下一个等待的节点；
-* {% post_link ReentrantLock 源码分析 ReentrantLock 源码分析 %}
 
-## 总结 
-1. ReentrantReadWriteLock 采用读写锁的思想，提交并发的吞吐量。建议在多读少写的情况下使用，因为写锁是互斥的。
-2. 读锁使用的是共享锁，多个读锁可以一起获取锁，互相不会影响，即读读不互斥。
-3. 读写、写读和写写是会互斥的，前者占有着锁，后者需要进入AQS队列中排队。
-4. 多个连续的读线程是一个接着一个被唤醒的，而不是一次性唤醒所有读线程。
-5. 只有多个读锁都完全释放了才会唤醒下一个写线程。
-6. 只有写锁完全释放了才会唤醒下一个等待者，这个等待者有可能是读线程，也可能是写线程。
+### 总结 
+1. **ReentrantReadWriteLock 采用读写锁的思想，提交并发的吞吐量。建议在多读少写的情况下使用，因为写锁是互斥的。**
+2. **读锁使用的是共享锁，多个读锁可以一起获取锁，互相不会影响，即读读不互斥。**
+3. **读写、写读和写写是会互斥的，前者占有着锁，后者需要进入AQS队列中排队。**
+4. **多个连续的读线程是一个接着一个被唤醒的，而不是一次性唤醒所有读线程。**
+5. **只有多个读锁都完全释放了才会唤醒下一个写线程。**
+6. **只有写锁完全释放了才会唤醒下一个等待者，这个等待者有可能是读线程，也可能是写线程。**

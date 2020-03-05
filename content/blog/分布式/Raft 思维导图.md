@@ -11,5 +11,6 @@ keywords: ["分布式"]
 ---
 <img src="/images/raft/Raft思维导图.png" width="1000" height="2000">
 
+![](/img/blog/raft/Raft思维导图.png)
 
 [本人对Raft的实现](https://github.com/miumiumius/siran_raft)

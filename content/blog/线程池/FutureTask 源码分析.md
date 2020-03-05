@@ -6,29 +6,30 @@ banner: "/img/blog/banners/006tNbRwly1fug0hms6vej31jk15ou0x.jpg"
 author: "Siran"
 summary: "FutureTask 是一个可以取消的异步计算任务，实现Future，Runnable。提供超时控制、可以获取线程执行后的返回结果、可以取消。"
 tags: ["线程池"]
-categories: ["线程池","Jdk源码"]
-keywords: ["线程池","Jdk源码","基础"]
+categories: ["线程池"]
+keywords: ["线程池","基础"]
 ---
 
-## 问题
+### 问题
 1. FutureTask 是线程安全的吗？
 2. FutureTask 状态是如何转变的？
 3. 获取FutureTask的result是立即返回的吗？如果不是，那么内部的流程是什么？
+****
+### 简述
+>FutureTask 是一个可以取消的异步计算任务，实现Future，Runnable。提供超时控制、可以获取线程执行后的返回结果、可以取消。
 
-## 简述
-FutureTask 是一个可以取消的异步计算任务，实现Future，Runnable。提供超时控制、可以获取线程执行后的返回结果、可以取消。
+![](/img/blog/线程池/Future类图.png)
+****
 
-<img src="/images/FutureTask/类图.png" width="500" height="400">
-
-## 源码分析
-### futureTask的状态
+### 源码分析
+#### FutureTask的状态
 当刚创建FutureTask的时候它的状态是NEW，在运行时状态会发生转换，有以下四中状态：
 * NEW -> COMPLETING -> NORMAL ： 正常执行完
 * NEW -> COMPLETING -> EXCEPTIONAL ： 执行过程中出现异常
 * NEW -> CANCELLED ： 执行前被取消了
 * NEW -> INTERRUPTING -> INTERRUPTED ：执行中被中断了
-
-### 主要参数
+****
+#### 主要参数
 ```c
     //需要执行的任务，因为futureTask是基于Callable实现的，而Callable可以理解为有返回值的Runnable。当执行后会置为null
     private Callable<V> callable;
@@ -39,7 +40,8 @@ FutureTask 是一个可以取消的异步计算任务，实现Future，Runnable�
     //等待的线程
     private volatile WaitNode waiters;
 ```
-### 构造函数
+****
+#### 构造函数
 ```c
 public FutureTask(Callable<V> callable) {
         if (callable == null)
@@ -53,11 +55,11 @@ public FutureTask(Runnable runnable, V result) {
         this.state = NEW;       // ensure visibility of callable
     }
 ```
-> 在这两个构造函数中 当传入的是Runnable，需要多传一个result。因为Runnable 是不带返回值的，需要调用#Executors.callable()方法封装成callable
-> 这时候的FutureTask的状态是NEW
-
-### run 方法
->因为FutureTask实现了Runnable，所以要实现#run()方法
+**在这两个构造函数中 当传入的是Runnable，需要多传一个result。因为Runnable 是不带返回值的，需要调用#Executors.callable()方法封装成callable
+这时候的FutureTask的状态是NEW**
+****
+#### run 方法
+**因为FutureTask实现了Runnable，所以要实现#run()方法**
 ```c
 public void run() {
         //<1> 判断状态，因为一个新的任务的初始状态是NEW，如果不是NEW说明已经被执行了。那么直接返回
@@ -103,8 +105,8 @@ public void run() {
         }
     }
 ```
-
-### setException 方法
+****
+#### setException 方法
 ```c
 protected void setException(Throwable t) {
         //<1> cas 设置该任务的状态为 COMPLETING
@@ -118,8 +120,8 @@ protected void setException(Throwable t) {
         }
     }
 ```
-
-### set方法
+****
+#### set方法
 ```c
 protected void set(V v) {
         if (UNSAFE.compareAndSwapInt(this, stateOffset, NEW, COMPLETING)) {
@@ -129,9 +131,9 @@ protected void set(V v) {
         }
     }
 ```
->这个方法与setException类似，只不过这里的outcome是返回结果对象，状态先设置为COMPLETING，然后再设置为NORMAL。正常情况
- 
-### handlePossibleCancellationInterrupt 方法
+**这个方法与setException类似，只不过这里的outcome是返回结果对象，状态先设置为COMPLETING，然后再设置为NORMAL。正常情况**
+****
+#### handlePossibleCancellationInterrupt 方法
 ```c
 private void handlePossibleCancellationInterrupt(int s) {
         if (s == INTERRUPTING)
@@ -139,9 +141,9 @@ private void handlePossibleCancellationInterrupt(int s) {
                 Thread.yield(); // wait out pending interrupt
     }
 ```
->handlePossibleCancellationInterrupt方法要确保cancel(true)产生的中断发生在run或runAndReset方法执行的过程中。这里会循环的调用Thread.yield()来确保状态在cancel方法中被设置为INTERRUPTED。
-
-### finishCompletion 方法
+**handlePossibleCancellationInterrupt方法要确保cancel(true)产生的中断发生在run或runAndReset方法执行的过程中。这里会循环的调用Thread.yield()来确保状态在cancel方法中被设置为INTERRUPTED。**
+****
+#### finishCompletion 方法
 ```c
 private void finishCompletion() {
         // assert state > COMPLETING;
@@ -173,10 +175,10 @@ private void finishCompletion() {
         callable = null;        // to reduce footprint
     }
 ```
-> 在调用#get()方法的时候，如果任务还没有执行完成(不管这个任务是正常还是异常)。那么#get()方法会调用#awaitDown()方法把调用线程放入waiter中进行等待，
-> 那么假如任务执行完成了那么会调用#finishCompletion()方法来唤醒在waiter中等待的线程。
-
-### get 方法
+**在调用#get()方法的时候，如果任务还没有执行完成(不管这个任务是正常还是异常)。那么#get()方法会调用#awaitDown()方法把调用线程放入waiter中进行等待，
+那么假如任务执行完成了那么会调用#finishCompletion()方法来唤醒在waiter中等待的线程。**
+****
+#### get 方法
 ```c
 public V get() throws InterruptedException, ExecutionException {
         int s = state;
@@ -197,9 +199,9 @@ public V get(long timeout, TimeUnit unit)
         return report(s);
     }
 ```
-
-# awaitDown 方法
->awaitDone方法是根据状态来判断是否能够返回结果，如果任务还未执行完毕，要添加到waiters中并阻塞，否则返回状态。
+****
+#### awaitDown 方法
+**awaitDone方法是根据状态来判断是否能够返回结果，如果任务还未执行完毕，要添加到waiters中并阻塞，否则返回状态。**
 ```c
 private int awaitDone(boolean timed, long nanos)
         throws InterruptedException {
@@ -249,7 +251,8 @@ private int awaitDone(boolean timed, long nanos)
         }
     }
 ```
-### removeWaiter 方法
+****
+#### removeWaiter 方法
 ```c
 private void removeWaiter(WaitNode node) {
     if (node != null) {
@@ -283,9 +286,9 @@ private void removeWaiter(WaitNode node) {
     }
 }
 ```
-
-### cancel 方法
->cancel方法用于取消任务，这里可能有两种情况，一种是任务已经执行了，另一种是还未执行
+****
+#### cancel 方法
+**cancel方法用于取消任务，这里可能有两种情况，一种是任务已经执行了，另一种是还未执行**
 ```c
 public boolean cancel(boolean mayInterruptIfRunning) {
         //<1> 如果状态不是NEW，或者设置状态为INTERRUPTING或CANCELLED失败，则取消失败，返回false。
@@ -316,7 +319,8 @@ public boolean cancel(boolean mayInterruptIfRunning) {
         return true;
     }
 ```
-### report 方法
+****
+#### report 方法
 ```c
 private V report(int s) throws ExecutionException {
         Object x = outcome;
@@ -330,8 +334,9 @@ private V report(int s) throws ExecutionException {
         throw new ExecutionException((Throwable)x);
     }
 ```
-### runAndReset 方法
->该方法和run方法类似，区别在于这个方法不会设置任务的执行结果值，所以在正常执行时，不会修改state，除非发生了异常或者中断，最后返回是否正确的执行并复位
+****
+#### runAndReset 方法
+**该方法和run方法类似，区别在于这个方法不会设置任务的执行结果值，所以在正常执行时，不会修改state，除非发生了异常或者中断，最后返回是否正确的执行并复位**
 ```c
 protected boolean runAndReset() {
         //<1> 这里和#run()方法一样
@@ -363,8 +368,9 @@ protected boolean runAndReset() {
         return ran && s == NEW;
     }
 ```
-### WaitNode
-> 是一个单向链表
+****
+#### WaitNode
+**是一个单向链表**
 ```c
   static final class WaitNode {
         volatile Thread thread;
@@ -374,7 +380,7 @@ protected boolean runAndReset() {
 ```
 
 ## 总结 
-* FutureTask 是线程安全的
-* 正常执行没有取消或者发生错误就是 NEW -> COMPLETING -> NORMAL。具体可以看 futureTask的状态部分
-* 在调用#get()方法来用去任务的执行结果，如果该任务没有执行完，则会堵塞当前调用线程直到任务完成被唤醒
-* 如果使用的是#get(long timeout, TimeUnit unit)方法，那么如果在超时时间内没有被唤醒则会抛出TimeOutException
+* **FutureTask 是线程安全的**
+* **正常执行没有取消或者发生错误就是 NEW -> COMPLETING -> NORMAL。具体可以看 futureTask的状态部分**
+* **在调用#get()方法来用去任务的执行结果，如果该任务没有执行完，则会堵塞当前调用线程直到任务完成被唤醒**
+* **如果使用的是#get(long timeout, TimeUnit unit)方法，那么如果在超时时间内没有被唤醒则会抛出TimeOutException**

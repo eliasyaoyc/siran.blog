@@ -6,37 +6,34 @@ banner: "/img/blog/banners/00704eQkgy1fs1hvk6nt7j30rs0kunjm.jpg"
 author: "Siran"
 summary: "通常使用锁就是 synchronized，经过 jdk 的一系列优化引入偏向锁、轻量级锁、重量级锁等概念，性能也是有很大的提高。"
 tags: ["AQS"]
-categories: ["AQS","Jdk源码"]
+categories: ["AQS"]
 keywords: ["AQS","Jdk源码","基础"]
 ---
-## 问题
-
-## 简述
+### 简述
 * ReentrantLock 与 AbstractQueuedSynchronizer 的关系
 * ReentrantLock 和 Synchronized 的区别？
 * ReentrantLock 实现原理
 * ReentrantLock 公平锁和非公平锁的区别？
-
-## 源码分析
+****
+### 源码分析
 > 通常使用锁就是 synchronized，经过 jdk 的一系列优化引入偏向锁、轻量级锁、重量级锁等概念，性能也是有很大的提高。
+>
 > 但是如果你想更加细化的控制锁或者说需要支持中断、公平性、有条件的加锁，那么 synchronized 是无法满足你的。
+>
 > 而 AbstractQueuedSynchronizer 则能满足你，这里简称AQS。AQS 提供一个 FIFO 队列，来实现锁以及其他功能。
+>
 > 它是一个抽象类，需要子类继承并实现所需要的方法来管理同步状态。例如：ReentrantLock，ReentrantReadWriteLock ，CountDownLatch，Semaphore等。
 
-<img src="/images/AQS/AQS实现类.png" width="600" height="400">
-
-> 在这么多实现类中，比较常用的也就是 ReentrantLock 和 CountDownLatch。本文主要分析 ReentrantLock
-* {% post_link ReentrantReadWriteLock 源码分析 ReentrantReadWriteLock 源码分析 %}
-* {% post_link Semaphore 源码分析 Semaphore 源码分析 %}
-* {% post_link CountDownLatch 源码分析 CountDownLatch 源码分析 %}
-* {% post_link Semaphore 源码分析 Semaphore 源码分析 %}
-
+![](/img/blog/AQS/AQS实现类.png)
+**在这么多实现类中，比较常用的也就是 ReentrantLock 和 CountDownLatch。本文主要分析 ReentrantLock**
+****
 ### AbstractQueuedSynchronizer 内部实现
 > AQS 内部维护着一个FIFO队列，该队列就是用来实现线程的并发访问控制。假如锁已经被获取了，那么其他线程就无法获取锁，AQS 会把无法获取锁的线程封装成一个个Node并放入FIFO队列中。
+>
 > 假如获取锁的线程释放了锁，那么会去这个队列中唤醒线程来获取锁(这种情况是非公平锁，公平锁会顺序唤醒队列中的线程来获取锁但是公平锁的性能会下降)
 
 
-Node 的主要属性(双向队列) 
+**Node 的主要属性(双向队列)** 
 ```c
 static final class Node {
     // 表示节点的状态，其中包含的状态有：
@@ -63,17 +60,17 @@ static final class Node {
     private volatile int state;
 }
 ```
-
+****
 ### ReentrantLock
-> 子类都需要继承 AbstractQueuedSynchronizer 来进行具体的实现。 在 ReentrantLock 中有三个内部类 Sync、NonfairSync、FairSync，来实现公平和非公平的获取锁
-
+**子类都需要继承 AbstractQueuedSynchronizer 来进行具体的实现。 在 ReentrantLock 中有三个内部类 Sync、NonfairSync、FairSync，来实现公平和非公平的获取锁**
+****
 ### 核心参数
 ```c
 // 内部类 继承 AbstractQueuedSynchronizer
 private final Sync sync;
 ```
-
-### Sync
+****
+### Sync 内部类
 ```c
 abstract static class Sync extends AbstractQueuedSynchronizer {
         private static final long serialVersionUID = -5179523762034025860L;
@@ -127,8 +124,9 @@ abstract static class Sync extends AbstractQueuedSynchronizer {
         }
     }
 ```
+****
 ### NonfairSync
-> 内部类：非公平模式
+**内部类：非公平模式**
 ```c
 static final class NonfairSync extends Sync {
         private static final long serialVersionUID = 7316153563782823691L;
@@ -147,9 +145,9 @@ static final class NonfairSync extends Sync {
         }
     }
 ```
-
+****
 ### FairSync
-> 内部类：公平模式
+**内部类：公平模式**
 ```c
 static final class FairSync extends Sync {
         private static final long serialVersionUID = -3000897897090466540L;
@@ -191,7 +189,7 @@ static final class FairSync extends Sync {
         }
     }
 ```
-
+****
 ### 构造函数
 ```c
 // 默认实现是非公平模式
@@ -203,9 +201,9 @@ public ReentrantLock(boolean fair) {
         sync = fair ? new FairSync() : new NonfairSync();
     }
 ```
-
+****
 ### lock 方法 独占锁获取
-> 根据构造函数来具体调用是非公平模式的还是公平模式下的#lock方法。其差异就是在#tryAcquire()的不同。在上面NonfairSync、FairSync中已经分析了
+**根据构造函数来具体调用是非公平模式的还是公平模式下的#lock方法。其差异就是在#tryAcquire()的不同。在上面NonfairSync、FairSync中已经分析了**
 ```c
 //获取锁
 public void lock() {
@@ -221,8 +219,9 @@ public final void acquire(int arg) {
             selfInterrupt();
     }
 ```
+****
 ### addWaiter 方法
-> 该方法就是根据当前线程创建一个Node，然后添加到队列尾部。
+**该方法就是根据当前线程创建一个Node，然后添加到队列尾部。**
 ```c
 private Node addWaiter(Node mode) {
     //<1> 根据当前线程创建一个Node对象
@@ -242,8 +241,9 @@ private Node addWaiter(Node mode) {
     return node;
 }
 ```
+****
 ### enq 方法
-> 如果#addWaiter方法无法把Node添加到队列尾部，那么就会调用此方法添加到队列中
+**如果#addWaiter方法无法把Node添加到队列尾部，那么就会调用此方法添加到队列中**
 ```c
 private Node enq(final Node node) {
     //<1> 死循环重复直到成功
@@ -264,8 +264,9 @@ private Node enq(final Node node) {
     }
 }
 ```
+****
 ### acquireQueued 方法
-> 该方法会不断的调用#tryAcquire方法来获取锁，直到成功为止
+**该方法会不断的调用#tryAcquire方法来获取锁，直到成功为止**
 ```c
 final boolean acquireQueued(final Node node, int arg) {
     boolean failed = true;
@@ -296,13 +297,13 @@ final boolean acquireQueued(final Node node, int arg) {
     }
 }
 ```
-这里有三个问题:
-1.什么条件下需要park？
-2.为什么要判断中断状态？
-3.死循环不会引起CPU使用率飙升？
-
+**这里有三个问题:**
+1. 什么条件下需要park？
+2. 为什么要判断中断状态？
+3. 死循环不会引起CPU使用率飙升？
+****
 ### shouldParkAfterFailedAcquire 方法
-> 在上面的#acquireQueued方法中的<2>中如果p不是head节点或者获取锁失败那么会进入此方法判断是否需要进行park
+**在上面的#acquireQueued方法中的<2>中如果p不是head节点或者获取锁失败那么会进入此方法判断是否需要进行park**
 ```c
 //这里的两个参数一个是该节点的前节点，和该节点
 private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
@@ -337,10 +338,10 @@ private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
     return false;
 }
 ```
-> 也就是说只有在前节点的状态是SIGNAL时，需要park。
-
+**也就是说只有在前节点的状态是SIGNAL时，需要park。**
+****
 ### parkAndCheckInterrupt 方法
-> 在#acquireQueued方法<3>中除了调用#shouldParkAfterFailedAcquire方法来判断是否需要park还调用了#parkAndCheckInterrupt方法来判断是否中断
+**在`#acquireQueued`方法`<3>`中除了调用`#shouldParkAfterFailedAcquire`方法来判断是否需要park还调用了`#parkAndCheckInterrupt`方法来判断是否中断**
 ```c
 private final boolean parkAndCheckInterrupt() {
     //<1> shouldParkAfterFailedAcquire 方法如果返回true 需要进行park，那么这里进行park
@@ -351,16 +352,16 @@ private final boolean parkAndCheckInterrupt() {
 ```
 > 这里注意一下#interrupted方法，如果当前线程是中断状态，则第一次调用该方法获取的是true，第二次则是false 而#isInterrupted方法则只是返回线程的中断状态，不执行复位操作。
 
-如果acquireQueued执行完毕，返回中断状态，回到acquire方法中，根据返回的中断状态判断是否需要执行Thread.currentThread().interrupt()。
+如果acquireQueued执行完毕，返回中断状态，回到acquire方法中，根据返回的中断状态判断是否需要执行`Thread.currentThread().interrupt()`。
 
 为什么要多做这一步呢？先判断中断状态，然后复位，如果之前线程是中断状态，再进行中断？
 
 这里就要介绍一下park方法了。park方法是Unsafe类中的方法，与之对应的是unpark方法。简单来说，当前线程如果执行了park方法，也就是阻塞了当前线程，反之，unpark就是唤醒一个线程。
 park的具体分析可以参考这篇文章：
 
-[!Java的LockSupport.park()实现分析](https://blog.csdn.net/hengyunabc/article/details/28126139)
+#### [Java的LockSupport.park()实现分析](https://blog.csdn.net/hengyunabc/article/details/28126139)
 
-park与wait的作用类型，但是对中断的处理并不相同。如果当前线程不是中断的状体，那么park/wait是一样的都会等待unpark/notify唤醒。但是如果一个线程已经是中断的状态了，wait会报错java.lang.IllegalMonitorStateException。
+>park与wait的作用类型，但是对中断的处理并不相同。如果当前线程不是中断的状体，那么park/wait是一样的都会等待unpark/notify唤醒。但是如果一个线程已经是中断的状态了，wait会报错java.lang.IllegalMonitorStateException。
 而park会直接返回。
 
 所以，知道了这一点，就可以知道为什么要进行中断状态的复位了：
@@ -368,11 +369,11 @@ park与wait的作用类型，但是对中断的处理并不相同。如果当前
 * 如果当前线程是中断状态，则park方法不起作用，会立即返回，然后parkAndCheckInterrupt方法会获取中断的状态，也就是true，并复位；
 * 再次执行循环的时候，由于在前一步已经把该线程的中断状态进行了复位，则再次调用park方法时会阻塞。
 
-所以，这里判断线程中断的状态实际上是为了不让循环一直执行，要让当前线程进入阻塞的状态。
+>所以，这里判断线程中断的状态实际上是为了不让循环一直执行，要让当前线程进入阻塞的状态。
 如果不这样判断，那么在#acquireQueued方法中前一个线程在获取锁之后执行了很耗时的操作，那么岂不是要一直执行该死循环？这样就造成了CPU使用率飙升，这是很严重的后果。
-
+****
 ### cancelAcquire 方法
->在acquireQueued方法的finally语句块中，如果在循环的过程中出现了异常，则执行cancelAcquire方法，用于将该节点标记为取消状态。该方法代码如下：
+**在acquireQueued方法的finally语句块中，如果在循环的过程中出现了异常，则执行cancelAcquire方法，用于将该节点标记为取消状态。该方法代码如下：**
 ```c
 private void cancelAcquire(Node node) {
     // Ignore if node doesn't exist
@@ -429,49 +430,48 @@ private void cancelAcquire(Node node) {
     }
 }
 ```
-在#cancelAcquire方法中从队列中剔除节点的三种情况:
+**在#cancelAcquire方法中从队列中剔除节点的`三种情况`:**
 #### 当前节点是tail
-这种情况很简单，因为tail是队列的最后一个节点，如果该节点需要取消，则直接把该节点的前继节点的next指向null，也就是把当前节点移除队列。出队的过程如下：
-<img src="/images/AQS/1.png" width="600" height="400">
-
+**这种情况很简单，因为tail是队列的最后一个节点，如果该节点需要取消，则直接把该节点的前继节点的next指向null，也就是把当前节点移除队列。出队的过程如下：**
+![](/img/blog/AQS/1.png)
 #### 当前节点不是head的后继节点，也不是tail，也就是当中节点
+![](/img/blog/AQS/2.png)
 
-<img src="/images/AQS/2.png" width="600" height="400">
-
-这里将node的前继节点的next指向了node的后继节点，真正执行的代码就是如下一行：
+**这里将node的前继节点的next指向了node的后继节点，真正执行的代码就是如下一行：**
 >compareAndSetNext(pred, predNext, next);
-
+****
 #### 当前节点是head的后继节点
-<img src="/images/AQS/3.png" width="600" height="400">
+![](/img/blog/AQS/3.png)
 
-这里直接unpark后继节点的线程，然后将next指向了自己。
-
-这里可能会有疑问，既然要删除节点，为什么都没有对prev进行操作，而仅仅是修改了next？
-
-要明确的一点是，这里修改指针的操作都是CAS操作，在AQS中所有以compareAndSet开头的方法都是尝试更新，并不保证成功，图中所示的都是执行成功的情况。
-
-那么在执行cancelAcquire方法时，当前节点的前继节点有可能已经执行完并移除队列了（参见setHead方法），所以在这里只能用CAS来尝试更新，而就算是尝试更新，也只能更新next，不能更新prev，因为prev是不确定的，否则有可能会导致整个队列的不完整，例如把prev指向一个已经移除队列的node。
-
-什么时候修改prev呢？其实prev是由其他线程来修改的。回去看下shouldParkAfterFailedAcquire方法，该方法有这样一段代码：
+>这里直接unpark后继节点的线程，然后将next指向了自己。
+>
+>这里可能会有疑问，既然要删除节点，为什么都没有对prev进行操作，而仅仅是修改了next？
+>
+>要明确的一点是，这里修改指针的操作都是CAS操作，在AQS中所有以compareAndSet开头的方法都是尝试更新，并不保证成功，图中所示的都是执行成功的情况。
+>
+>那么在执行cancelAcquire方法时，当前节点的前继节点有可能已经执行完并移除队列了（参见setHead方法），所以在这里只能用CAS来尝试更新，而就算是尝试更新，也只能更新next，不能更新prev，因为prev是不确定的，否则有可能会导致整个队列的不完整，例如把prev指向一个已经移除队列的node。
+>
+>什么时候修改prev呢？其实prev是由其他线程来修改的。回去看下shouldParkAfterFailedAcquire方法，该方法有这样一段代码：
 ```c
 do {
     node.prev = pred = pred.prev;
 } while (pred.waitStatus > 0);
 pred.next = node;
 ```
-该段代码的作用就是通过prev遍历到第一个不是取消状态的node，并修改prev。
+**该段代码的作用就是通过prev遍历到第一个不是取消状态的node，并修改prev。**
 
 这里为什么可以更新prev？因为shouldParkAfterFailedAcquire方法是在获取锁失败的情况下才能执行，因此进入该方法时，说明已经有线程获得锁了，
 并且在执行该方法时，当前节点之前的节点不会变化（因为只有当下一个节点获得锁的时候才会设置head），所以这里可以更新prev，而且不必用CAS来更新。
-
+****
 ### unlock 方法  独占锁释放
 ```c
 public void unlock() {
         sync.release(1);
     }
 ```
+****
 ### release 方法
-> unlock 释放锁和#lock获取锁一样凑通过调用AQS的方法来实现。这里调用的是#release方法
+**unlock 释放锁和#lock获取锁一样凑通过调用AQS的方法来实现。这里调用的是#release方法**
 ```c
 public final boolean release(int arg) {
     //<1> 尝试释放锁
@@ -485,6 +485,7 @@ public final boolean release(int arg) {
     return false;
 }
 ```
+****
 ### tryRelease 方法
 ```c
 //和#tryAcquire一样，需要子类复写
@@ -505,8 +506,9 @@ protected final boolean tryRelease(int releases) {
     return free;
 }
 ```
+****
 ### unparkSuccessor 方法
-> 当前线程被释放之后，需要唤醒下一个节点的线程，通过unparkSuccessor方法来实现：
+**当前线程被释放之后，需要唤醒下一个节点的线程，通过unparkSuccessor方法来实现：**
 ```c
 private void unparkSuccessor(Node node) {
     /*
@@ -534,19 +536,17 @@ private void unparkSuccessor(Node node) {
         LockSupport.unpark(s.thread);
 }
 ```
-主要功能就是要唤醒下一个线程，这里s == null || s.waitStatus > 0判断后继节点是否为空或者是否是取消状态，然后从队列尾部向前遍历找到最前面的一个waitStatus小于0的节点，至于为什么从尾部开始向前遍历，回想一下cancelAcquire方法的处理过程，cancelAcquire只是设置了next的变化，
-没有设置prev的变化，在最后有这样一行代码：node.next = node，如果这时执行了unparkSuccessor方法，并且向后遍历的话，就成了死循环了，所以这时只有prev是稳定的。
-
+**主要功能就是要唤醒下一个线程，这里s == null || s.waitStatus > 0判断后继节点是否为空或者是否是取消状态，然后从队列尾部向前遍历找到最前面的一个waitStatus小于0的节点，至于为什么从尾部开始向前遍历，回想一下cancelAcquire方法的处理过程，cancelAcquire只是设置了next的变化，
+没有设置prev的变化，在最后有这样一行代码：node.next = node，如果这时执行了unparkSuccessor方法，并且向后遍历的话，就成了死循环了，所以这时只有prev是稳定的。**
+****
 ### condition 条件队列
 ```c
 public Condition newCondition() {
         return sync.newCondition();
     }
 ```
-condition在这篇文章中进行分析:
-* {% post_link Condition 源码分析 Condition 源码分析 %}
-
-## 总结 
-1. ReentrantLock 通过继承 AbstractQueuedSynchronizer 来具体实现同步
-2. ReentrantLock 主要就是使用了标记位state(在ReentrantLock中表是获取锁的次数)，和 FIFO 队列来处理锁的状态、获取和方式。并且大量使用CAS来保证修改状态的安全
-3. ReentrantLock 的非公平锁是抢占式的获取锁，而公平锁是顺序去获取。可以对比内部类FairSync和unFairSync中的#tryAcquire()方法
+****
+### 总结 
+1. **ReentrantLock 通过继承 AbstractQueuedSynchronizer 来具体实现同步**
+2. **ReentrantLock 主要就是使用了标记位state(在ReentrantLock中表是获取锁的次数)，和 FIFO 队列来处理锁的状态、获取和方式。并且大量使用CAS来保证修改状态的安全**
+3. **ReentrantLock 的非公平锁是抢占式的获取锁，而公平锁是顺序去获取。可以对比内部类FairSync和unFairSync中的#tryAcquire()方法**

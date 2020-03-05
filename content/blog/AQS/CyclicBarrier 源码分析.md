@@ -6,17 +6,20 @@ banner: "/img/blog/banners/006tKfTcly1g0aso107znj31400u04qr.jpg"
 author: "Siran"
 summary: "CyclicBarrier(回声栅栏)根据Javadoc描述，它会阻塞一组线程直到这些线程同时达到某个条件才继续执行。它就像一个栅栏一样，当一组线程都到达了栅栏处才继续往下走。"
 tags: ["AQS"]
-categories: ["AQS","Jdk源码"]
+categories: ["AQS"]
 keywords: ["AQS","Jdk源码","基础"]
 ---
-## 问题
+### 问题
 1. CyclicBarrier 与 CountDownLatch 的区别
 2. CyclicBarrier具有什么特性？
-## 简述
-CyclicBarrier(回声栅栏)根据Javadoc描述，它会阻塞一组线程直到这些线程同时达到某个条件才继续执行。它就像一个栅栏一样，当一组线程都到达了栅栏处才继续往下走。
+****
+### 简述
+>CyclicBarrier(回声栅栏)根据Javadoc描述，它会阻塞一组线程直到这些线程同时达到某个条件才继续执行。它就像一个栅栏一样，当一组线程都到达了栅栏处才继续往下走。
 CyclicBarrier 是可以被复用的。
-## 使用方法
->比如吃早饭，需要人全部到齐在开始吃。代码如下：
+
+****
+### 使用方法
+比如吃早饭，需要人全部到齐在开始吃。代码如下：
 ```c
 //第一种 创建CyclicBarrier的时候只传入了等待的数量
 public static void main(String[] args) throws BrokenBarrierException, InterruptedException {
@@ -50,7 +53,7 @@ public static void main(String[] args) throws BrokenBarrierException, Interrupte
         }
     }
 ```
-输出：
+**输出：**
 ```bash
 //第一段代码的输出
 Thread-0线程达到
@@ -66,11 +69,11 @@ Thread-2线程达到
 Thread-1线程达到
 Thread-1吃早饭
 ```
-这代码很简单，第一段代码等三个线程全部到达的时候，在一起做下面的事情。
-第二段代码，多传入了一个执行的command。当三个线程全部达到的时候，会触发command进行执行，随机一个线程执行。
-
-## 源码分析
-### 主要属性
+**这代码很简单，第一段代码等三个线程全部到达的时候，在一起做下面的事情。
+第二段代码，多传入了一个执行的command。当三个线程全部达到的时候，会触发command进行执行，随机一个线程执行。**
+****
+### 源码分析
+#### 主要属性
 ```c
 //锁
 private final ReentrantLock lock = new ReentrantLock();
@@ -85,16 +88,17 @@ private Generation generation = new Generation();
 //当前代还需要等待的线程数
 private int count;
 ```
-### 内部类
+****
+#### 内部类
 ```c
 private static class Generation {
         boolean broken = false;
     }
 ```
-用于控制CyclicBarrier的循环使用
-
-比如，上面示例中的三个线程完成后进入下一代，继续等待三个线程达到栅栏处再一起执行，而CountDownLatch则做不到这一点，CountDownLatch是一次性的，无法重置其次数。
-### 构造器
+**用于控制CyclicBarrier的循环使用
+比如，上面示例中的三个线程完成后进入下一代，继续等待三个线程达到栅栏处再一起执行，而CountDownLatch则做不到这一点，CountDownLatch是一次性的，无法重置其次数。**
+****
+#### 构造器
 ```c
 //构造方法需要传入一个parties变量，也就是需要等待的线程数。
 public CyclicBarrier(int parties) {
@@ -108,9 +112,9 @@ public CyclicBarrier(int parties, Runnable barrierAction) {
         this.barrierCommand = barrierAction;
     }
 ```
-
-### await 方法
-每个需要在栅栏处等待的线程都需要显式地调用await()方法等待其它线程的到来。
+****
+#### await 方法
+每个需要在栅栏处等待的线程都需要显式地调用`await()`方法等待其它线程的到来。
 ```c
 public int await() throws InterruptedException, BrokenBarrierException {
         try {
@@ -213,15 +217,15 @@ private void breakBarrier() {
         trip.signalAll();
     }
 ```
-dowait()方法里的整个逻辑分成两个部分：
+**dowait()方法里的整个逻辑分成两个部分：**
 1. 最后一个线程走上面的逻辑，当count减为0的时候，打破栅栏，它调用nextGeneration()方法通知条件队列中的等待线程转移到AQS的队列中等待被唤醒，并进入下一代。
 2. 非最后一个线程走下面的for循环逻辑，这些线程会阻塞在condition的await()方法处，它们会加入到条件队列中，等待被通知，当它们唤醒的时候已经更新换“代”了，这时候返回。
-
-## 总结 
-1. CyclicBarrier会使一组线程阻塞在await()处，当最后一个线程到达时唤醒（只是从条件队列转移到AQS队列中）前面的线程大家再继续往下走
-2. CyclicBarrier不是直接使用AQS实现的一个同步器
-3. CyclicBarrier基于ReentrantLock及其Condition实现整个同步逻辑
-4. CyclicBarrier与CountDownLatch的异同？
+****
+### 总结 
+1. **CyclicBarrier会使一组线程阻塞在await()处，当最后一个线程到达时唤醒（只是从条件队列转移到AQS队列中）前面的线程大家再继续往下走**
+2. **CyclicBarrier不是直接使用AQS实现的一个同步器**
+3. **CyclicBarrier基于ReentrantLock及其Condition实现整个同步逻辑**
+4. **CyclicBarrier与CountDownLatch的异同？**
    * 两者都能实现阻塞一组线程等待被唤醒
    * CyclicBarrier是最后一个线程到达时自动唤醒
    * CountDownLatch是通过显式地调用countDown()实现的

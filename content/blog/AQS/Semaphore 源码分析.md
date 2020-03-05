@@ -5,24 +5,25 @@ draft: false
 banner: "/img/blog/banners/006tNc79ly1g2bd7nfv72j31400u0x6s.jpg"
 author: "Siran"
 summary: "基于微服务的架构是未来的趋势，但是实现这种架构会面临许多困难。现代应用架构远比过去的架构复杂，因此实现微服务架构将会带来了一系列特殊的挑战，而服务网格可以帮我们解决很多问题。"
-tags: ["线程池"]
-categories: ["线程池","Jdk源码"]
-keywords: ["线程池","Jdk源码","基础"]
+tags: ["AQS"]
+categories: ["AQS"]
+keywords: ["AQS","Jdk源码","基础"]
 ---
 
-## 问题
+### 问题
 * Semaphore是什么？
 * Semaphore具有哪些特性？
 * Semaphore通常使用在什么场景中？
 * Semaphore的许可次数是否可以动态增减？
 * Semaphore如何实现限流？
-
-## 简述
-Semaphore(信号量)，用于限制同一时间对共享资源的访问次数上，也就是常说的限流。在Semaphore中保存着permit(许可)，
-每次调用#acquire方法都会消费一个许可，当没有许可了就会堵塞住，每次调用#release()都将归还一个许可。
-
-## 使用方法
-javadoc 中的例子
+****
+### 简述
+>Semaphore(信号量)，用于限制同一时间对共享资源的访问次数上，也就是常说的限流。在Semaphore中保存着permit(许可)，
+>
+>每次调用`#acquire`方法都会消费一个许可，当没有许可了就会堵塞住，每次调用`#release()`都将归还一个许可。
+****
+### 使用方法
+**javadoc 中的例子**
 ```c
 class Pool {
     private static final int MAX_AVAILABLE = 100;
@@ -65,12 +66,12 @@ class Pool {
     }
   }
 ```
-大致意思是：getNextAvailableItem方法只能有100个线程来使用，如果第101的线程要来使用，那么不好意思，它会被封装成node进去AQS队列中等待。
-当#putItem方法中的#release方法来释放一个许可之后他会被从AQS中被唤醒。
-
-## 源码分析
-Semaphore中包含了一个实现了AQS的同步器Sync，以及它的两个子类FairSync和NonFairSync，这说明Semaphore也是区分公平模式和非公平模式的。
-### 内部类Sync
+**大致意思是：getNextAvailableItem方法只能有100个线程来使用，如果第101的线程要来使用，那么不好意思，它会被封装成node进去AQS队列中等待。
+当#putItem方法中的#release方法来释放一个许可之后他会被从AQS中被唤醒。**
+****
+### 源码分析
+**Semaphore中包含了一个实现了AQS的同步器Sync，以及它的两个子类FairSync和NonFairSync，这说明Semaphore也是区分公平模式和非公平模式的。**
+#### 内部类Sync
 ```c
 abstract static class Sync extends AbstractQueuedSynchronizer {
         //在Semaphore 中的state表示许可，也就是当前能执行的线程数量。
@@ -136,7 +137,8 @@ abstract static class Sync extends AbstractQueuedSynchronizer {
         }
     }
 ```
-### 内部类NonfairSync
+****
+#### 内部类NonfairSync
 ```c
 //Semaphore.NonfairSync
 static final class NonfairSync extends Sync {
@@ -150,7 +152,8 @@ static final class NonfairSync extends Sync {
         }
     }
 ```
-### 内部类FairSync
+****
+#### 内部类FairSync
 ```c
 //Semaphore.FairSync
 static final class FairSync extends Sync {
@@ -174,9 +177,9 @@ static final class FairSync extends Sync {
         }
     }
 ```
-公平模式下，先检测前面是否有排队的，如果有排队的则获取许可失败，进入队列排队，否则尝试原子更新state的值。
-
-### 构造方法
+**公平模式下，先检测前面是否有排队的，如果有排队的则获取许可失败，进入队列排队，否则尝试原子更新state的值。**
+****
+#### 构造方法
 ```c
 //构造方法，创建时要传入许可次数，默认使用非公平模式
 public Semaphore(int permits) {
@@ -187,8 +190,9 @@ public Semaphore(int permits, boolean fair) {
         sync = fair ? new FairSync(permits) : new NonfairSync(permits);
     }
 ```
-### acquire 方法
-获取一个许可，默认使用的是可中断方式，如果尝试获取许可失败，会进入AQS的队列中排队。
+****
+#### acquire 方法
+**获取一个许可，默认使用的是可中断方式，如果尝试获取许可失败，会进入AQS的队列中排队。**
 ```c
 public void acquire() throws InterruptedException {
         sync.acquireSharedInterruptibly(1);
@@ -243,9 +247,10 @@ private void doAcquireSharedInterruptibly(int arg)
         }
     }
 ```
-在#acquire方法中#tryAcquireShared方法尝试获取锁已经在上面的内部类讲过了，公平和非公平的区别在于是否能顺序的获取的锁
+在`#acquire`方法中`#tryAcquireShared`方法尝试获取锁已经在上面的内部类讲过了，公平和非公平的区别在于是否能顺序的获取的锁
 
-### acquireUninterruptibly 方法
+****
+#### acquireUninterruptibly 方法
 非中断的获取许可 对应 #acquire方法
 ```c
 public void acquireUninterruptibly() {
@@ -290,8 +295,8 @@ private void doAcquireShared(int arg) {
         }
     }
 ```
-
-### release 方法
+****
+#### release 方法
 ```c
 //释放许可
 public void release() {
@@ -344,9 +349,9 @@ private void doReleaseShared() {
         }
     }
 ```
-
-## 总结 
-1. Semaphore 也叫信号量，通常用于控制同一时刻对共享资源的访问上，也就是限流场景
-2. Semaphore 初始化的时候需要指定许可的次数，许可的次数是存储在state中
-3. 可以动态减少n个许可
-4. 可以调用release(int permits)，来释放许可， 这样可以做到动态的增加许可
+****
+### 总结 
+1. **Semaphore 也叫信号量，通常用于控制同一时刻对共享资源的访问上，也就是限流场景**
+2. **Semaphore 初始化的时候需要指定许可的次数，许可的次数是存储在state中**
+3. **可以动态减少n个许可**
+4. **可以调用release(int permits)，来释放许可， 这样可以做到动态的增加许可**

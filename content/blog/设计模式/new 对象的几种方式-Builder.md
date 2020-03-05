@@ -5,9 +5,9 @@ draft: false
 banner: "/img/blog/banners/006tNc79ly1g1wrwnznblj31400u0x6p.jpg"
 author: "Siran"
 summary: ""
-tags: ["Pulsar"]
-categories: ["Pulsar"]
-keywords: ["Pulsar"]
+tags: ["设计模式"]
+categories: ["设计模式"]
+keywords: ["设计模式","Jdk源码","基础"]
 ---
 ## 问题
 

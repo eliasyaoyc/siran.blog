@@ -6,17 +6,18 @@ banner: "/img/blog/banners/006tNc79ly1g1wro2nt88j31400u0u0z.jpg"
 author: "Siran"
 summary: "ScheduledThreadPoolExecutor 定义了一个延迟队列 DelayedWorkQueue，这个队列是基于二叉堆来实现的，每次都会把最快要执行的任务放入堆顶(最小堆)。"
 tags: ["线程池"]
-categories: ["线程池","Jdk源码"]
-keywords: ["线程池","Jdk源码","基础"]
+categories: ["线程池"]
+keywords: ["线程池","基础"]
 ---
-## 问题
+### 问题
 * ScheduledThreadPoolExecutor 与 Timer 执行定时任务比较，ScheduledThreadPoolExecutor 有什么优势？
 * ScheduledThreadPoolExecutor 与 ThreadPoolExecutor 的区别？
 * ScheduledThreadPoolExecutor 的任务调度方法有哪些？ 有什么区别？
 * ScheduledThreadPoolExecutor 如何实现异步执行并获取结果的？
 * ScheduledThreadPoolExecutor 中 DelayedWorkQueue的数据结构是什么？
 
-## 简述
+****
+### 简述
 >ScheduledThreadPoolExecutor 继承 ThreadPoolExecutor 重用线程池的功能：
 * 相比 ThreadPoolExecutor 支持周期性任务的调度
 * ScheduledThreadPoolExecutor 基于相对时间
@@ -29,12 +30,12 @@ keywords: ["线程池","Jdk源码","基础"]
 * Timer 是基于绝对时间的，对系统时间比较敏感
 * Timer 的任务队列也是使用的二叉堆，处于栈顶的是最快要执行的任务(最小堆)
 * Timer 作为单线程，如果执行任务的过程中发生错误，那么会导致接下来的任务无法执行
-
-## 源码分析
-### 类图
-<img src="/images/scheduledThreadPoolExecutor/类图.png" width="600" height="400">
-
-### 重要参数以及相关方法
+****
+### 源码分析
+#### 类图
+![](/img/blog/线程池/ScheduledThreadPool类图.png)
+****
+#### 重要参数以及相关方法
 ```c
 //当调用 #shutdown方法的时候是否要继续执行存在的周期性任务  默认是false
 private volatile boolean continueExistingPeriodicTasksAfterShutdown;
@@ -77,7 +78,8 @@ public boolean getRemoveOnCancelPolicy() {
         return removeOnCancel;
     }
 ```
-### 构造方法
+****
+#### 构造方法
 ```c
 public ScheduledThreadPoolExecutor(int corePoolSize) {
         super(corePoolSize, Integer.MAX_VALUE, 0, NANOSECONDS,
@@ -100,12 +102,10 @@ public ScheduledThreadPoolExecutor(int corePoolSize,
               new DelayedWorkQueue(), threadFactory, handler);
     }
 ```
-因为 ScheduledThreadPoolExecutor 继承 ThreadPoolExecutor，所以这里都是调用 ThreadPoolExecutor 的构造方法。
-
-{% post_link ThreadPoolExecutor源码分析 ThreadPoolExecutor源码分析 %}
-
+**因为 ScheduledThreadPoolExecutor 继承 ThreadPoolExecutor，所以这里都是调用 ThreadPoolExecutor 的构造方法。**
+****
 ### 核心方法
-### schedule 方法
+#### schedule 方法
 ```c
 public ScheduledFuture<?> schedule(Runnable command,
                                        long delay,
@@ -133,8 +133,7 @@ public <V> ScheduledFuture<V> schedule(Callable<V> callable,
         return t;
     }
 ```
-> 这两个 schedule 方法两个重载方法，只有第一个参数不同。
-> Runnable 和 Callable的区别是：Runnable 没有返回值，无法抛出 Exception
+**这两个 schedule 方法两个重载方法，只有第一个参数不同。Runnable 和 Callable的区别是：Runnable 没有返回值，无法抛出 Exception**
 ```c
 public interface Runnable {
     public abstract void run();
@@ -143,7 +142,7 @@ public interface Callable<V> {
     V call() throws Exception;
 }
 ```
-> 在 schedule 方法中<1>处 通过传入一个任务然后调用 #decorateTask 方法封装成 RunnableScheduledFuture
+**在 schedule 方法中<1>处 通过传入一个任务然后调用 #decorateTask 方法封装成 RunnableScheduledFuture**
 ```c
 //修改或替换用于执行 runnable 的任务。此方法可重写用于管理内部任务的具体类。默认实现只返回给定任务。
 protected <V> RunnableScheduledFuture<V> decorateTask(
@@ -156,12 +155,11 @@ protected <V> RunnableScheduledFuture<V> decorateTask(
     return task;
 }
 ```
-> 然后调用 #delayedExecute 方法来执行延迟任务
-> 最后返回 #ScheduledFuture 对象
+**然后调用 #delayedExecute 方法来执行延迟任务最后返回 #ScheduledFuture 对象**
 
-
-### scheduleAtFixedRate 方法
-> 下一次执行时间相当于是上一次的执行时间加上period，它是采用已固定的频率来执行任务
+****
+#### scheduleAtFixedRate 方法
+**下一次执行时间相当于是上一次的执行时间加上period，它是采用已固定的频率来执行任务**
 ```c
 public ScheduledFuture<?> scheduleAtFixedRate(Runnable command,
                                                   long initialDelay,
@@ -185,9 +183,9 @@ public ScheduledFuture<?> scheduleAtFixedRate(Runnable command,
         return t;
     }
 ```
-
-### scheduleWithFixedDelay 方法
-> 与scheduleAtFixedRate方法不同的是，下一次执行时间是上一次任务执行完的系统时间加上period，因而具体执行时间不是固定的，但周期是固定的，是采用相对固定的延迟来执行任务
+****
+#### scheduleWithFixedDelay 方法
+**与scheduleAtFixedRate方法不同的是，下一次执行时间是上一次任务执行完的系统时间加上period，因而具体执行时间不是固定的，但周期是固定的，是采用相对固定的延迟来执行任务**
 ```c
 public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command,
                                                      long initialDelay,
@@ -211,16 +209,16 @@ public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command,
         return t;
     }
 ```
-
-### execute 方法
+****
+#### execute 方法
 ```c
 //立即执行 也就是把 delay 时间置为 0
 public void execute(Runnable command) {
         schedule(command, 0, NANOSECONDS);
     }
 ```
-
-### submit 方法
+****
+#### submit 方法
 ```c
 //也是调用了 schedule 方法
 public Future<?> submit(Runnable task) {
@@ -233,8 +231,8 @@ public <T> Future<T> submit(Callable<T> task) {
         return schedule(task, 0, NANOSECONDS);
     }
 ```
-
-### shutdown、shutdownNow、getQueue 方法
+****
+#### shutdown、shutdownNow、getQueue 方法
 ```c
 public void shutdown() {
         super.shutdown();
@@ -246,11 +244,10 @@ public BlockingQueue<Runnable> getQueue() {
         return super.getQueue();
     }
 ```
-> 这些方法都是直接调用父类 ThreadPoolExecutor 中的实现。
-
-{% post_link ThreadPoolExecutor源码分析 ThreadPoolExecutor源码分析 %}
-### onShutdown 方法
-> 复写 ThreadPoolExecutor 中的 onShutdown 方法
+**这些方法都是直接调用父类 ThreadPoolExecutor 中的实现。**
+****
+#### onShutdown 方法
+**复写 ThreadPoolExecutor 中的 onShutdown 方法**
 ```c
 @Override void onShutdown() {
         BlockingQueue<Runnable> q = super.getQueue();
@@ -286,8 +283,9 @@ public BlockingQueue<Runnable> getQueue() {
         tryTerminate();
     }
 ```
-### delayedExecute 方法
-> 上述的调度方法最终都是调用此方法来执行延迟任务
+****
+#### delayedExecute 方法
+**上述的调度方法最终都是调用此方法来执行延迟任务**
 ```c
 private void delayedExecute(RunnableScheduledFuture<?> task) {
         //<1> 判断是否已经处于shutdown状态
@@ -309,12 +307,12 @@ private void delayedExecute(RunnableScheduledFuture<?> task) {
         }
     }
 ```
-> 也就是说 ScheduledThreadPoolExecutor 最终执行任务其实和还是是让 ThreadPoolExecutor 去执行
-> ScheduledThreadPoolExecutor 和 ThreadPoolExecutor 的区别在于，ThreadPoolExecutor 是通过不断的从阻塞队列中取出 Runnable 类型的任务并执行。
-> 而 ScheduledThreadPoolExecutor 是不断的从延迟队列 DelayedWorkQueue 中取出 ScheduledFutureTask 类型的任务来执行，来实现周期性调度的功能。
-
-### ScheduledFutureTask
-> ScheduledThreadPoolExecutor 的内部类
+**也就是说 ScheduledThreadPoolExecutor 最终执行任务其实和还是是让 ThreadPoolExecutor 去执行
+ScheduledThreadPoolExecutor 和 ThreadPoolExecutor 的区别在于，ThreadPoolExecutor 是通过不断的从阻塞队列中取出 Runnable 类型的任务并执行。
+而 ScheduledThreadPoolExecutor 是不断的从延迟队列 DelayedWorkQueue 中取出 ScheduledFutureTask 类型的任务来执行，来实现周期性调度的功能。**
+****
+#### ScheduledFutureTask
+**ScheduledThreadPoolExecutor 的内部类**
 ```c
     private class ScheduledFutureTask<V>
             extends FutureTask<V> implements RunnableScheduledFuture<V> {
@@ -413,16 +411,13 @@ private void delayedExecute(RunnableScheduledFuture<?> task) {
         }
     }
 ```
-{% post_link FutureTask源码分析 FutureTask源码分析 %}
+****
+#### DelayedWorkQueue
+**ScheduledThreadPoolExecutor之所以要自己实现阻塞的工作队列，在执行定时任务的时候，每个任务的执行时间都不同，
+所以DelayedWorkQueue的工作就是按照执行时间的升序来排列，执行时间距离当前时间越近的任务在队列的前面,那这种优先队列的模式。
+它可以保证每次出队的任务都是当前队列中执行时间最靠前的，由于它是基于堆结构的队列，堆结构在执行插入和删除操作时的最坏时间复杂度是 O(logN)。**
 
-### DelayedWorkQueue
-> ScheduledThreadPoolExecutor之所以要自己实现阻塞的工作队列，在执行定时任务的时候，每个任务的执行时间都不同，
-> 所以DelayedWorkQueue的工作就是按照执行时间的升序来排列，执行时间距离当前时间越近的任务在队列的前面,那这种优先队列的模式。
-> 它可以保证每次出队的任务都是当前队列中执行时间最靠前的，由于它是基于堆结构的队列，堆结构在执行插入和删除操作时的最坏时间复杂度是 O(logN)。
-
-二叉堆这种数据结构可以看以下文章，都是一样的道理：
-
-* {% post_link PriorityQueue源码分析 PriorityQueue源码分析 %}
+****
 #### 参数
 ```c
 //初始容量
@@ -438,10 +433,10 @@ private Thread leader = null;
 // 条件队列：当较新的任务在队列的头部可用时，或者新线程可能需要成为leader，则通过该条件发出信号
 private final Condition available = lock.newCondition();
 ```
->所有线程会有三种身份中的一种：leader和follower，以及一个干活中的状态：proccesser。它的基本原则就是，永远最多只有一个leader。而所有follower都在等待成为leader。线程池启动时会自动产生一个Leader负责等待网络IO事件，当有一个事件产生时，Leader线程首先通知一个Follower线程将其提拔为新的Leader，然后自己就去干活了，去处理这个网络事件，处理完毕后加入Follower线程等待队列，等待下次成为Leader。这种方法可以增强CPU高速缓存相似性，及消除动态内存分配和线程间的数据交换。
+**所有线程会有三种身份中的一种：leader和follower，以及一个干活中的状态：proccesser。它的基本原则就是，永远最多只有一个leader。而所有follower都在等待成为leader。线程池启动时会自动产生一个Leader负责等待网络IO事件，当有一个事件产生时，Leader线程首先通知一个Follower线程将其提拔为新的Leader，然后自己就去干活了，去处理这个网络事件，处理完毕后加入Follower线程等待队列，等待下次成为Leader。这种方法可以增强CPU高速缓存相似性，及消除动态内存分配和线程间的数据交换。**
 
 [参考自https://blog.csdn.net/goldlevi/article/details/7705180](https://blog.csdn.net/goldlevi/article/details/7705180)
-
+****
 #### offer 方法
 ```c
 public boolean offer(Runnable x) {
@@ -477,6 +472,7 @@ public boolean offer(Runnable x) {
             return true;
         }
 ```
+****
 #### take 方法
 ```c
 public RunnableScheduledFuture<?> take() throws InterruptedException {
@@ -530,9 +526,9 @@ public RunnableScheduledFuture<?> take() throws InterruptedException {
 
 其他方法和PriorityQueue 以及 DelayQueue都类似。
 
-## 总结 
-* ScheduledThreadPoolExecutor 继承自 ThreadPoolExecutor，所以它也是一个线程池，也有 corePoolSize 和 workQueue，ScheduledThreadPoolExecutor 特殊的地方在于，自己实现了优先工作队列 DelayedWorkQueue
-* ScheduledThreadPoolExecutor 实现了 ScheduledExecutorService，所以就有了任务调度的方法，如schedule，scheduleAtFixedRate 和 scheduleWithFixedDelay
-* 内部类ScheduledFutureTask 继承自 FutureTask，实现了任务的异步执行并且可以获取返回结果。同时也实现了Delayed接口，可以通过getDelay方法获取将要执行的时间间隔
-* 周期任务的执行其实是调用了FutureTask类中的runAndReset方法，每次执行完设置下一次的执行时间周而复始
-* DelayedWorkQueue的数据结构，它是一个基于最小堆结构的优先队列，并且每次出队时能够保证取出的任务是当前队列中下次执行时间最小的任务。堆结构只保证了子节点的值要比父节点的值要大，但是不保证在整个堆中都是有序的
+### 总结 
+* **ScheduledThreadPoolExecutor 继承自 ThreadPoolExecutor，所以它也是一个线程池，也有 corePoolSize 和 workQueue，ScheduledThreadPoolExecutor 特殊的地方在于，自己实现了优先工作队列 DelayedWorkQueue**
+* **ScheduledThreadPoolExecutor 实现了 ScheduledExecutorService，所以就有了任务调度的方法，如schedule，scheduleAtFixedRate 和 scheduleWithFixedDelay**
+* **内部类ScheduledFutureTask 继承自 FutureTask，实现了任务的异步执行并且可以获取返回结果。同时也实现了Delayed接口，可以通过getDelay方法获取将要执行的时间间隔**
+* **周期任务的执行其实是调用了FutureTask类中的runAndReset方法，每次执行完设置下一次的执行时间周而复始**
+* **DelayedWorkQueue的数据结构，它是一个基于最小堆结构的优先队列，并且每次出队时能够保证取出的任务是当前队列中下次执行时间最小的任务。堆结构只保证了子节点的值要比父节点的值要大，但是不保证在整个堆中都是有序的**

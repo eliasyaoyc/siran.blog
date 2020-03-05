@@ -6,24 +6,24 @@ banner: "/img/blog/banners/00704eQkgy1fs3o6ljkknj30rs0ku4qp.jpg"
 author: "Siran"
 summary: "PriorityQueue里的每个元素都会进行排序，每次弹出一个元素要么是最大的要么是最小的，取决于排序规则。"
 tags: ["集合"]
-categories: ["集合","Jdk源码"]
+categories: ["集合"]
 keywords: ["集合","Jdk源码","基础"]
 ---
 ## 问题
-1.什么是优先队列？
-2.PriorityQueue线程安全吗？
-3.PriorityQueue是有序的吗？
-4.PriorityQueue如何实现？
-
-## 前言
-PriorityQueue是基于Heap来实现的。
+1. 什么是优先队列？
+2. PriorityQueue线程安全吗？
+3. PriorityQueue是有序的吗？
+4. PriorityQueue如何实现？
+****
+## 简介
+>PriorityQueue是基于Heap来实现的。
 PriorityQueue里的每个元素都会进行排序，每次弹出一个元素要么是最大的要么是最小的，取决于排序规则
 PriorityQueue是一个无界的队列，但是内部会有一个容量默认为11。
 PriorityQueue确保子节点一定比其父节点大
 假设现在往PriorityQueue中插入1,3,4,6,5,1,2
 
-<img src="/images/WechatIMG17.png" width="400" height="400">
-
+![](/img/blog/集合/priorityQeueu/WechatIMG17.png)
+****
 ## 源码分析
 
 #### 主要参数
@@ -39,7 +39,7 @@ private final Comparator<? super E> comparator;
 //修改次数
 transient int modCount = 0; // non-private to simplify nested class access
 ```
-
+****
 #### 构造器
 ```c
 //这些构造器可以指定容量和元素的Comparator(不指定就默认元素自身的排序)，也可以传入Collection 或者 PriorityQueue
@@ -131,6 +131,7 @@ private void heapify() {
             siftDown(i, (E) queue[i]);
     }
 ```
+****
 #### 入队
 ```c
 //添加一个元素，最终是调用#offer()方法
@@ -215,7 +216,9 @@ private void siftUpComparable(int k, E x) {
 ```
 还是以1,3,4,6,5,1,2 为例子一开始插入1是在4后面的如图所示，但是在进行堆化的时候发现1< 4，互换位置，1的父节点是1 不小于，满足二叉堆的特性。
 
-<img src="/images/1581490896271.jpg" width="400" height="400">
+![](/img/blog/集合/priorityQeueu/1581490896271.jpg)
+
+****
 
 #### 出队
 ```c
@@ -275,28 +278,28 @@ private void siftDownComparable(int k, E x) {
         queue[k] = key;
     }
 ```
->继续以1,3,4,6,5,1,2为例子
+**继续以1,3,4,6,5,1,2为例子**
 
-<img src="/images/WechatIMG16.png" width="400" height="400">
+![](/img/blog/集合/priorityQeueu/WechatIMG16.png)
 
->现在调用#poll()方法弹出第一个元素,最后一个元素被置为null(这里置为null的意思并不是删除。而是要移动)
+**现在调用#poll()方法弹出第一个元素,最后一个元素被置为null(这里置为null的意思并不是删除。而是要移动)**
 
-<img src="/images/WechatIMG12.png" width="400" height="400">
+![](/img/blog/集合/priorityQeueu/WechatIMG12.png)
 
->因为一个节点下面有两个子节点所以只要比较一半的元素就可以。
-以第一个节点开始，获取该节点的左右子节点取小值则为(1)，判断如果最后一个元素(2)比当前的最小值(1)还要小直接退出这个循环,并把最后一个元素(2)放到第一个元素的位置上
+**因为一个节点下面有两个子节点所以只要比较一半的元素就可以。
+以第一个节点开始，获取该节点的左右子节点取小值则为(1)，判断如果最后一个元素(2)比当前的最小值(1)还要小直接退出这个循环,并把最后一个元素(2)放到第一个元素的位置上**
 
-<img src="/images/WechatIMG13.png" width="400" height="400">
+![](/img/blog/集合/priorityQeueu/WechatIMG13.png)
 
->如果大于当前的最小值(1)，则交换位置继续往下比较
+**如果大于当前的最小值(1)，则交换位置继续往下比较**
 
-<img src="/images/WechatIMG14.png" width="400" height="400">
+![](/img/blog/集合/priorityQeueu/WechatIMG14.png)
 
->最终
+**最终**
 
-<img src="/images/WechatIMG15.png" width="400" height="400">
+![](/img/blog/集合/priorityQeueu/WechatIMG15.png)
 
-
+****
 #### 删除
 ```c
 //删除给定的元素
@@ -348,6 +351,7 @@ private E removeAt(int i) {
         return null;
     }
 ```
+***
 #### 获取首元素
 ```c
 //获取头节点 最小值或者是最大值
@@ -355,9 +359,10 @@ public E peek() {
         return (size == 0) ? null : (E) queue[0];
     }
 ```
+****
 ## 总结
 
-* PriorityQueue不是线程安全的，任何操作都没有使用同步机制。多线程情况下可以使用PriorityBlockingQueue
-* PriorityQueue是无序的，只有第一个元素要么是最小的要么是最大的
-* PriorityQueue入队出对对应堆的插入元素和删除元素，
-* PriorityQueue的入队出队的时间复杂度相比于数组而言慢为O(log(n))
+* **PriorityQueue不是线程安全的，任何操作都没有使用同步机制。多线程情况下可以使用PriorityBlockingQueue**
+* **PriorityQueue是无序的，只有第一个元素要么是最小的要么是最大的**
+* **PriorityQueue入队出对对应堆的插入元素和删除元素，**
+* **PriorityQueue的入队出队的时间复杂度相比于数组而言慢为O(log(n))**
