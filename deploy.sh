@@ -21,4 +21,5 @@ echo -e "\033[0;32mDeploying updates to GitHub...\033[0m"
 
    # Come Back up to the Project Root
    cd ..
+   rm -rf public
    git remote set-url origin https://github.com/miumiumius/siran.blog.git
