@@ -186,7 +186,7 @@ Pulsar将高性能的流（Kafka所追求的）和灵活的传统队列（Rabbit
 
 
 ****
-本文来参考自Pulsar社区，如果对Pulsar感兴趣，可通过下列方式参与Pulsar社区：
+本文参考自Pulsar社区，如果对Pulsar感兴趣，可通过下列方式参与Pulsar社区：
 
 - Pulsar Slack频道: 
   https://apache-pulsar.slack.com/

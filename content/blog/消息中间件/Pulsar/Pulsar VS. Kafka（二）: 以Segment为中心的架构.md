@@ -98,7 +98,7 @@ Pulsar是以Segment为中心的，因此在扩展容量时`不需要数据重新
 
 通过利用分布式日志存储，Pulsar可以最大化Segment放置选项，`实现高写入和高读取可用性`。 例如，使用BookKeeper，副本设置等于2，只要任何2个Bookie启动，就可以对主题分区进行写入。 对于读取可用性，只要主题分区的副本集中有1个处于活动状态，用户就可以读取它，而不会出现任何不一致。
 ****
-本文来参考自Pulsar社区，如果对Pulsar感兴趣，可通过下列方式参与Pulsar社区：
+本文参考自Pulsar社区，如果对Pulsar感兴趣，可通过下列方式参与Pulsar社区：
 
 - Pulsar Slack频道: 
   https://apache-pulsar.slack.com/
