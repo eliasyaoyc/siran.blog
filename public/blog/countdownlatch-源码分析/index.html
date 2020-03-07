@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CountDownLatch 源码分析 · 技术分享</title>
+  <meta name="author" content="Siran Yao(姚毅晨)" />
+
+  
+  <meta name="keywords" content="AQS, Jdk源码, 基础">
+  
+
+  <meta name="generator" content="Hugo 0.65.2" />
+
+  
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  
+  <link href="/css/animate.css" rel="stylesheet">
+
+  
+  
+  <link href="/css/style.blue.css" rel="stylesheet" id="theme-stylesheet">
+  
+
+  
+  <link href="/css/custom.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/search.css" />
+
+  
+  
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+  <link rel="shortcut icon" href="/img/123.png" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="/img/123.png" />
+
+  
+  <link href="/css/owl.carousel.css" rel="stylesheet">
+  <link href="/css/owl.theme.css" rel="stylesheet">
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Siran Yao">
+
+  
+  <link rel="stylesheet" href="/css/prism.css" />
+
+  
+  <meta property="og:title" content="CountDownLatch 源码分析" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="/blog/countdownlatch-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90//" />
+  <meta property="og:image" content="/img/uugai.com_1583215700293.png" />
+  <meta property="og:image:alt" content="ServiceMesher Logo" />
+
+  
+  <meta name="description" content="CountDownLatch是通过一个计数器来实现的，计数器的初始值为线程的数量。每当一个线程完成了自己的任务后，计数器的值就会减1。当计数器值到达0时，它表示所有的线程已经完成了任务，然后在闭锁上等待的线程就可以恢复执行任务。">
+  <meta property="og:description" content="CountDownLatch是通过一个计数器来实现的，计数器的初始值为线程的数量。每当一个线程完成了自己的任务后，计数器的值就会减1。当计数器值到达0时，它表示所有的线程已经完成了任务，然后在闭锁上等待的线程就可以恢复执行任务。">
+  <meta name="twitter:description" content="CountDownLatch是通过一个计数器来实现的，计数器的初始值为线程的数量。每当一个线程完成了自己的任务后，计数器的值就会减1。当计数器值到达0时，它表示所有的线程已经完成了任务，然后在闭锁上等待的线程就可以恢复执行任务。">
+  <meta property="og:description" content="CountDownLatch是通过一个计数器来实现的，计数器的初始值为线程的数量。每当一个线程完成了自己的任务后，计数器的值就会减1。当计数器值到达0时，它表示所有的线程已经完成了任务，然后在闭锁上等待的线程就可以恢复执行任务。" />
+
+  
+  <meta name="referrer" content="never">
+
+  
+  
+  <script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?154337f0d95f0b110f98c1d5d7038895";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+  </script>
+
+
+  
+  
+
+</head>
+
+
+  <body>
+  <link href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/monokai.min.css" rel="stylesheet">
+  <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+    <div id="all">
+
+        <header>
+
+          <div class="navbar-affixed-top" data-spy="affix" data-offset-top="200">
+
+    <div class="navbar navbar-default yamm" role="navigation" id="navbar">
+
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand home" href="/">
+                    <img src="/img/uugai.com_1583215700293.png" alt="CountDownLatch 源码分析 logo" class="hidden-xs hidden-sm">
+                    <img src="/img/uugai.com_1583215700293.png" alt="CountDownLatch 源码分析 logo" class="visible-xs visible-sm">
+                    <span class="sr-only">CountDownLatch 源码分析 - 跳到主页</span>
+                </a>
+                <div class="navbar-buttons">
+                    <button type="button" class="navbar-toggle btn-template-main" data-toggle="collapse" data-target="#navigation">
+                      <span class="sr-only">切换导航</span>
+                        <i class="fa fa-align-justify"></i>
+                    </button>
+                </div>
+            </div>
+            
+
+            <div class="navbar-collapse collapse" id="navigation">
+                <ul class="nav navbar-nav navbar-right">
+                  
+                  <li class="dropdown">
+                    
+                    <a href="/">主页</a>
+                    
+                  </li>
+                  
+                  <li class="dropdown">
+                    
+                    <a href="/blog/">博客</a>
+                    
+                  </li>
+                  
+                  <li class="dropdown">
+                    
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">文档 <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                      
+                        <li><a href="https://istio.io/">Istio官网</a></li>
+                      
+                        <li><a href="http://pulsar.apache.org/en/">Pulsar官网</a></li>
+                      
+                    </ul>
+                    
+                  </li>
+                  
+                  <li class="dropdown">
+                    
+                    <a href="/contact/">联系我</a>
+                    
+                  </li>
+                  
+                  
+                    <li>
+                        <a href="#modalSearch" data-toggle="modal" data-target="#modalSearch" style="outline: none;">
+                        <span class="hidden-sm hidden-md hidden-lg">搜索</span> <span id="searchGlyph" class="glyphicon glyphicon-search"></span>
+                    </a>
+                    </li>
+                  
+                </ul>
+            </div>
+            
+
+        </div>
+    </div>
+    
+
+</div>
+
+
+
+
+<div id="modalSearch" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">博客搜索</h4>
+      </div>
+      <div class="modal-body">
+          
+<div class="aa-input-container" id="aa-input-container">
+    <input type="search" id="aa-search-input" class="aa-input-search" placeholder="输入文章标题或摘要" name="search" autocomplete="off" autofocus="autofocus"/>
+    <svg class="aa-input-icon" viewBox="654 -372 1664 1664">
+        <path d="M1806,332c0-123.3-43.8-228.8-131.5-316.5C1586.8-72.2,1481.3-116,1358-116s-228.8,43.8-316.5,131.5  C953.8,103.2,910,208.7,910,332s43.8,228.8,131.5,316.5C1129.2,736.2,1234.7,780,1358,780s228.8-43.8,316.5-131.5  C1762.2,560.8,1806,455.3,1806,332z M2318,1164c0,34.7-12.7,64.7-38,90s-55.3,38-90,38c-36,0-66-12.7-90-38l-343-342  c-119.3,82.7-252.3,124-399,124c-95.3,0-186.5-18.5-273.5-55.5s-162-87-225-150s-113-138-150-225S654,427.3,654,332  s18.5-186.5,55.5-273.5s87-162,150-225s138-113,225-150S1262.7-372,1358-372s186.5,18.5,273.5,55.5s162,87,225,150s113,138,150,225  S2062,236.7,2062,332c0,146.7-41.3,279.7-124,399l343,343C2305.7,1098.7,2318,1128.7,2318,1164z" />
+    </svg>
+</div>
+<script src="/js/algoliasearch.min.js"></script>
+<script src="/js/autocomplete.min.js"></script>
+
+<script>
+var client = algoliasearch("X4YB3WOBNV", "d2134c5a8d250e6d3246594240c45201");
+var index = client.initIndex("servicemesher");
+
+autocomplete('#aa-search-input',
+{ hint: false}, {
+    source: autocomplete.sources.hits(index, {hitsPerPage: 5}),
+    
+    displayKey: 'name',
+    
+    templates: {
+        
+        suggestion: function(suggestion) {
+            baseURL=""
+            baseURL=baseURL.substring(0,baseURL.length-1)
+            return '<span>' + '<a href="' + baseURL + suggestion.url+ '">' +
+                suggestion._highlightResult.title.value + '</a></span>'+
+                '<span>'+suggestion._highlightResult.summary.value+'</span>';
+        }
+    }
+});
+</script>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+        </header>
+
+        <div id="heading-breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>CountDownLatch 源码分析</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        <div id="content">
+            <div class="container">
+
+                <div class="row">
+
+                    
+
+                    <div class="col-md-9" id="blog-post">
+                        <div class="well">
+                            <div class="author-category">
+                            <i class="fa fa-calendar-o">
+                            2020年2月5日
+                            </i>
+                            |
+                            
+                            作者 Siran
+                            
+                            
+                            
+                            |
+                            4600字 | 阅读大约需要10分钟
+                            </div>
+                            
+                            
+                            <div class="author-category">
+                            
+                            
+                            归档于 <a href="/categories/aqs">AQS</a>
+                            
+                            |
+                            
+                            
+                            
+                            标签
+                            
+                            <a style="text-transform:capitalize" href="/tags/aqs/"><i>#AQS</i></a>
+                            
+                            </div>
+                            
+                            
+                        </div>
+                        <div id="post-content">
+                          <h3 id="问题">问题</h3>
+<ul>
+<li>CountDownLatch是什么？</li>
+<li>CountDownLatch具有哪些特性？</li>
+<li>CountDownLatch通常运用在什么场景中？</li>
+<li>CountDownLatch的初始次数是否可以调整？</li>
+</ul>
+<hr>
+<h3 id="简述">简述</h3>
+<blockquote>
+<p>CountDownLatch这个类能够使一个线程等待其他线程完成各自的工作后再执行。例如，应用程序的主线程希望在负责启动框架服务的线程已经启动所有的框架服务之后再执行。</p>
+<p>CountDownLatch是通过一个计数器来实现的，计数器的初始值为线程的数量。每当一个线程完成了自己的任务后，计数器的值就会减1。当计数器值到达0时，它表示所有的线程已经完成了任务，然后在闭锁上等待的线程就可以恢复执行任务。</p>
+</blockquote>
+<p><strong>执行过程如下图所示：</strong></p>
+<p><img src="/img/blog/AQS/4.png" alt=""></p>
+<hr>
+<h3 id="countdownlatch的使用">CountDownLatch的使用</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public class CountDownTest {
+    public <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> main(String[] args) throws InterruptedException {
+        CountDownLatch latch <span style="color:#f92672">=</span> new CountDownLatch(<span style="color:#ae81ff">3</span>);
+        System.out.println(<span style="color:#e6db74">&#34;in &#34;</span> <span style="color:#f92672">+</span> Thread.currentThread().getName() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;...&#34;</span>);
+        System.out.println(<span style="color:#e6db74">&#34;before latch.await()...&#34;</span>);
+        <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">3</span>; i<span style="color:#f92672">++</span>) {
+            new Thread(<span style="color:#e6db74">&#34;T&#34;</span> <span style="color:#f92672">+</span> i) {
+                <span style="color:#960050;background-color:#1e0010">@</span>Override
+                public <span style="color:#66d9ef">void</span> run() {
+                    System.out.println(<span style="color:#e6db74">&#34;enter Thread &#34;</span> <span style="color:#f92672">+</span> getName() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;...&#34;</span>);
+                    System.out.println(<span style="color:#e6db74">&#34;execute countdown...&#34;</span>);
+                    latch.countDown();
+                    System.out.println(<span style="color:#e6db74">&#34;exit Thread&#34;</span> <span style="color:#f92672">+</span> getName() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;.&#34;</span>);
+                }
+            }.start();
+        }
+        latch.await();
+        System.out.println(<span style="color:#e6db74">&#34;in &#34;</span> <span style="color:#f92672">+</span> Thread.currentThread().getName() <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;...&#34;</span>);
+        System.out.println(<span style="color:#e6db74">&#34;after latch.await()...&#34;</span>);
+    }
+}
+</code></pre></div><p><strong>创建了一个初始值为3的CountDownLatch对象latch，然后创建了3个线程，每个线程执行时都会执行latch.countDown()使计数器的值减1，而主线程在执行到latch.await()时会等待直到计数器的值为0。输出的结果如下：</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">in main...
+before latch.await()...
+enter Thread T1...
+enter Thread T2...
+execute countdown...
+execute countdown...
+enter Thread T3...
+execute countdown...
+exit ThreadT2.
+exit ThreadT1.
+exit ThreadT3.
+in main...
+after latch.await()...
+
+</code></pre></div><p>可以看到CountDownLatch 是主要通过<code>#countDown</code>方法和<code>#await</code>方法来实现此功能得，接下来会详细分析这两个方法。</p>
+<hr>
+<h3 id="源码分析aqs共享模式的实现reentrantlock是独占模式">源码分析(AQS共享模式的实现,ReentrantLock是独占模式)</h3>
+<h4 id="构造方法">构造方法</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">//传入一个参数count，CountDownLatch也使用了内部类Sync来实现，Sync继承自AQS：
+</span><span style="color:#75715e"></span>public <span style="color:#a6e22e">CountDownLatch</span>(<span style="color:#66d9ef">int</span> count) {
+    <span style="color:#66d9ef">if</span> (count <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>) throw new IllegalArgumentException(<span style="color:#e6db74">&#34;count &lt; 0&#34;</span>);
+    this.sync <span style="color:#f92672">=</span> new Sync(count);
+}
+</code></pre></div><hr>
+<h4 id="sync-内部类">sync 内部类</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">private <span style="color:#66d9ef">static</span> final class Sync extends AbstractQueuedSynchronizer {
+    private <span style="color:#66d9ef">static</span> final <span style="color:#66d9ef">long</span> serialVersionUID <span style="color:#f92672">=</span> <span style="color:#ae81ff">4982264981922014374L</span>;
+    Sync(<span style="color:#66d9ef">int</span> count) {
+        setState(count);
+    }
+    <span style="color:#66d9ef">int</span> getCount() {
+        <span style="color:#66d9ef">return</span> getState();
+    }
+    protected <span style="color:#66d9ef">int</span> tryAcquireShared(<span style="color:#66d9ef">int</span> acquires) {
+        <span style="color:#66d9ef">return</span> (getState() <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) <span style="color:#f92672">?</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">:</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+    }
+    protected boolean tryReleaseShared(<span style="color:#66d9ef">int</span> releases) {
+        <span style="color:#75715e">// Decrement count; signal when transition to zero
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">for</span> (;;) {
+            <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getState();
+            <span style="color:#66d9ef">if</span> (c <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
+                <span style="color:#66d9ef">return</span> false;
+            <span style="color:#66d9ef">int</span> nextc <span style="color:#f92672">=</span> c<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+            <span style="color:#66d9ef">if</span> (compareAndSetState(c, nextc))
+                <span style="color:#66d9ef">return</span> nextc <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>;
+        }
+    }
+}
+</code></pre></div><p>这里调用了AQS类中的setState方法来设置count，AQS的state属性在ReentrantLock文章已经提到，它是AQS中的状态标识，具体的含义由子类来定义，可见这里把<code>state定义为数量</code>。</p>
+<hr>
+<h4 id="await-方法">await 方法</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">await</span>() throws InterruptedException {
+    sync.acquireSharedInterruptibly(<span style="color:#ae81ff">1</span>);
+}
+</code></pre></div><p>直接调用了AQS类中的<code>#acquireSharedInterruptibly</code>方法</p>
+<hr>
+<h4 id="acquiresharedinterruptibly-方法">acquireSharedInterruptibly 方法</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public final <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">acquireSharedInterruptibly</span>(<span style="color:#66d9ef">int</span> arg)
+            throws InterruptedException {
+    <span style="color:#75715e">//&lt;1&gt; 如果线程被中断则抛出异常,会归位
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (Thread.interrupted())
+        throw new InterruptedException();
+    <span style="color:#75715e">//&lt;2&gt; 尝试获取共享锁，该方法在Sync类中实现
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (tryAcquireShared(arg) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>)
+        <span style="color:#75715e">//&lt;3&gt; 如果获取失败，需要根据当前线程创建一个mode为SHARE的的Node放入队列中并循环获取
+</span><span style="color:#75715e"></span>        doAcquireSharedInterruptibly(arg);
+}
+</code></pre></div><p>这里的<code>tryAcquireShared</code>方法在Sync中被重写。</p>
+<hr>
+<h4 id="tryacquireshared-方法">tryAcquireShared 方法</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">protected <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">tryAcquireShared</span>(<span style="color:#66d9ef">int</span> acquires) {
+    <span style="color:#75715e">//根据状态来判断，如果state等于0的时候，说明计数器为0了，返回1表示成功，否则返回-1表示失败。
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> (getState() <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) <span style="color:#f92672">?</span> <span style="color:#ae81ff">1</span> <span style="color:#f92672">:</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+}
+</code></pre></div><hr>
+<h4 id="doacquiresharedinterruptibly-方法">doAcquireSharedInterruptibly 方法</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">private <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doAcquireSharedInterruptibly</span>(<span style="color:#66d9ef">int</span> arg)
+        throws InterruptedException {
+    <span style="color:#75715e">//&lt;1&gt; 创建一个共享模式的节点
+</span><span style="color:#75715e"></span>    final Node node <span style="color:#f92672">=</span> addWaiter(Node.SHARED);
+    boolean failed <span style="color:#f92672">=</span> true;
+    try {
+        <span style="color:#66d9ef">for</span> (;;) {
+            final Node p <span style="color:#f92672">=</span> node.predecessor();
+            <span style="color:#66d9ef">if</span> (p <span style="color:#f92672">==</span> head) {
+                <span style="color:#75715e">//&lt;2&gt; 如果 p == head 表示是队列的第一个节点，尝试获取
+</span><span style="color:#75715e"></span>                <span style="color:#66d9ef">int</span> r <span style="color:#f92672">=</span> tryAcquireShared(arg);
+                <span style="color:#66d9ef">if</span> (r <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>) {
+                    <span style="color:#75715e">//&lt;3&gt; 设置当前节点为head，并向后面的节点传播
+</span><span style="color:#75715e"></span>                    setHeadAndPropagate(node, r);
+                    p.next <span style="color:#f92672">=</span> null; <span style="color:#75715e">// help GC
+</span><span style="color:#75715e"></span>                    failed <span style="color:#f92672">=</span> false;
+                    <span style="color:#66d9ef">return</span>;
+                }
+            }
+            <span style="color:#66d9ef">if</span> (shouldParkAfterFailedAcquire(p, node) <span style="color:#f92672">&amp;&amp;</span>
+                parkAndCheckInterrupt())
+                throw new InterruptedException();
+        }
+    } finally {
+        <span style="color:#66d9ef">if</span> (failed)
+            <span style="color:#f92672">&lt;</span><span style="color:#ae81ff">4</span><span style="color:#f92672">&gt;</span> <span style="color:#960050;background-color:#1e0010">执行失败取消节点</span>
+            cancelAcquire(node);
+    }
+}
+</code></pre></div><hr>
+<h4 id="setheadandpropagate-方法">setHeadAndPropagate 方法</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">private <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">setHeadAndPropagate</span>(Node node, <span style="color:#66d9ef">int</span> propagate) {
+    <span style="color:#75715e">//&lt;1&gt; 首先先将之前的head记录一下，用于下面的判断
+</span><span style="color:#75715e"></span>    Node h <span style="color:#f92672">=</span> head; <span style="color:#75715e">// Record old head for check below
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//&lt;2&gt; 设置当前节点为头节
+</span><span style="color:#75715e"></span>    setHead(node);
+    <span style="color:#75715e">/*
+</span><span style="color:#75715e">     * Try to signal next queued node if:
+</span><span style="color:#75715e">     *   Propagation was indicated by caller,
+</span><span style="color:#75715e">     *     or was recorded (as h.waitStatus either before
+</span><span style="color:#75715e">     *     or after setHead) by a previous operation
+</span><span style="color:#75715e">     *     (note: this uses sign-check of waitStatus because
+</span><span style="color:#75715e">     *      PROPAGATE status may transition to SIGNAL.)
+</span><span style="color:#75715e">     * and
+</span><span style="color:#75715e">     *   The next node is waiting in shared mode,
+</span><span style="color:#75715e">     *     or we don&#39;t know, because it appears null
+</span><span style="color:#75715e">     *
+</span><span style="color:#75715e">     * The conservatism in both of these checks may cause
+</span><span style="color:#75715e">     * unnecessary wake-ups, but only when there are multiple
+</span><span style="color:#75715e">     * racing acquires/releases, so most need signals now or soon
+</span><span style="color:#75715e">     * anyway.
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#75715e">//&lt;3&gt; 最后在判断是否需要唤醒。这里的propagate值是根据tryAcquireShared方法的返回值传入的，所以对于CountDownLatch来说，如果获取成功，则应该是1。
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (propagate <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> h <span style="color:#f92672">==</span> null <span style="color:#f92672">||</span> h.waitStatus <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span>
+        (h <span style="color:#f92672">=</span> head) <span style="color:#f92672">==</span> null <span style="color:#f92672">||</span> h.waitStatus <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>) {
+        Node s <span style="color:#f92672">=</span> node.next;
+        <span style="color:#66d9ef">if</span> (s <span style="color:#f92672">==</span> null <span style="color:#f92672">||</span> s.isShared())
+            doReleaseShared();
+    }
+}
+</code></pre></div><blockquote>
+<p>如果h.waitStatus &gt;= 0，表示是初始状态或者是取消状态，那么当propagate &lt;= 0时将不唤醒节点。</p>
+<p>获取node的下一个节点s，如果s == null || s.isShared()则释放节点并唤醒。为什么下一个节点为null的时候也需要唤醒操作呢？仔细理解一下这句话：</p>
+<p>The conservatism in both of these checks may cause unnecessary wake-ups, but only when there are multiple racing acquires/releases, so most need signals now or soon anyway.</p>
+<p>这种保守的检查方式可能会引起多次不必要的线程唤醒操作，但这些情况仅存在于多线程并发的acquires/releases操作，所以大多线程数需要立即或者很快地一个信号。这个信号就是执行unpark方法。因为LockSupport在unpark的时候，相当于给了一个信号，即使这时候没有线程在park状态，之后有线程执行park的时候也会读到这个信号就不会被挂起。</p>
+<p>在简单点说，就是线程在执行时，如果之前没有unpark操作，在执行park时会阻塞该线程；但如果在park之前执行过一次或多次unpark（unpark调用多次和一次是一样的，结果不会累加）这时执行park时并不会阻塞该线程。</p>
+<p>所以，如果在唤醒node的时候下一个节点刚好添加到队列中，就可能避免了一次阻塞的操作。</p>
+<p>所以这里的propagate表示传播，传播的过程就是只要成功的获取到共享锁就唤醒下一个节点。`</p>
+</blockquote>
+<hr>
+<h4 id="doreleaseshared-方法">doReleaseShared 方法</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">private <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">doReleaseShared</span>() {
+    <span style="color:#75715e">/*
+</span><span style="color:#75715e">     * Ensure that a release propagates, even if there are other
+</span><span style="color:#75715e">     * in-progress acquires/releases.  This proceeds in the usual
+</span><span style="color:#75715e">     * way of trying to unparkSuccessor of head if it needs
+</span><span style="color:#75715e">     * signal. But if it does not, status is set to PROPAGATE to
+</span><span style="color:#75715e">     * ensure that upon release, propagation continues.
+</span><span style="color:#75715e">     * Additionally, we must loop in case a new node is added
+</span><span style="color:#75715e">     * while we are doing this. Also, unlike other uses of
+</span><span style="color:#75715e">     * unparkSuccessor, we need to know if CAS to reset status
+</span><span style="color:#75715e">     * fails, if so rechecking.
+</span><span style="color:#75715e">     */</span>
+    <span style="color:#66d9ef">for</span> (;;) {
+        Node h <span style="color:#f92672">=</span> head;
+        <span style="color:#66d9ef">if</span> (h <span style="color:#f92672">!=</span> null <span style="color:#f92672">&amp;&amp;</span> h <span style="color:#f92672">!=</span> tail) {
+            <span style="color:#66d9ef">int</span> ws <span style="color:#f92672">=</span> h.waitStatus;
+            <span style="color:#75715e">//&lt;1&gt; 如果head的状态是SIGNAL，证明是等待一个信号，这时尝试将状态复位；
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 如果复位成功，则唤醒下一节点，否则继续循环。
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">if</span> (ws <span style="color:#f92672">==</span> Node.SIGNAL) {
+                <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>compareAndSetWaitStatus(h, Node.SIGNAL, <span style="color:#ae81ff">0</span>))
+                    <span style="color:#66d9ef">continue</span>;            <span style="color:#75715e">// loop to recheck cases
+</span><span style="color:#75715e"></span>                unparkSuccessor(h);
+            }
+            <span style="color:#75715e">//&lt;2&gt; 如果状态是0，尝试设置状态为传播状态，表示节点向后传播；
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// 如果不成功则继续循环。
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (ws <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&amp;&amp;</span>
+                     <span style="color:#f92672">!</span>compareAndSetWaitStatus(h, <span style="color:#ae81ff">0</span>, Node.PROPAGATE))
+                <span style="color:#66d9ef">continue</span>;                <span style="color:#75715e">// loop on failed CAS
+</span><span style="color:#75715e"></span>        }
+        <span style="color:#75715e">//&lt;3&gt; 如果头节点有变化，则继续循环
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> (h <span style="color:#f92672">==</span> head)                   <span style="color:#75715e">// loop if head changed
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">break</span>;
+    }
+}
+</code></pre></div><p>什么时候状态会是SIGNAL呢？回顾一下<code>shouldParkAfterFailedAcquire</code>方法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">private <span style="color:#66d9ef">static</span> boolean <span style="color:#a6e22e">shouldParkAfterFailedAcquire</span>(Node pred, Node node) {
+    <span style="color:#66d9ef">int</span> ws <span style="color:#f92672">=</span> pred.waitStatus;
+    <span style="color:#66d9ef">if</span> (ws <span style="color:#f92672">==</span> Node.SIGNAL)
+        <span style="color:#75715e">/*
+</span><span style="color:#75715e">         * This node has already set status asking a release
+</span><span style="color:#75715e">         * to signal it, so it can safely park.
+</span><span style="color:#75715e">         */</span>
+        <span style="color:#66d9ef">return</span> true;
+    <span style="color:#66d9ef">if</span> (ws <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>) {
+        <span style="color:#75715e">/*
+</span><span style="color:#75715e">         * Predecessor was cancelled. Skip over predecessors and
+</span><span style="color:#75715e">         * indicate retry.
+</span><span style="color:#75715e">         */</span>
+        <span style="color:#66d9ef">do</span> {
+            node.prev <span style="color:#f92672">=</span> pred <span style="color:#f92672">=</span> pred.prev;
+        } <span style="color:#66d9ef">while</span> (pred.waitStatus <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">0</span>);
+        pred.next <span style="color:#f92672">=</span> node;
+    } <span style="color:#66d9ef">else</span> {
+        <span style="color:#75715e">/*
+</span><span style="color:#75715e">         * waitStatus must be 0 or PROPAGATE.  Indicate that we
+</span><span style="color:#75715e">         * need a signal, but don&#39;t park yet.  Caller will need to
+</span><span style="color:#75715e">         * retry to make sure it cannot acquire before parking.
+</span><span style="color:#75715e">         */</span>
+        compareAndSetWaitStatus(pred, ws, Node.SIGNAL);
+    }
+    <span style="color:#66d9ef">return</span> false;
+}
+</code></pre></div><p>当状态不为<code>CANCEL或者是SIGNAL</code>时，为了保险起见，这里把状态都设置成了SIGNAL，然后会再次循环进行判断是否需要阻塞。</p>
+<p>回到doReleaseShared方法，这里为什么不直接把SIGNAL设置为PROPAGATE，而是先把SIGNAL设置为0，然后再设置为PROPAGATE呢？</p>
+<p>原因在于unparkSuccessor方法，该方法会判断当前节点的状态是否小于0，如果小于0则将h的状态设置为0，如果在这里直接设置为PROPAGATE状态的话，则相当于多做了一次CAS操作。unparkSuccessor中的代码如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">int</span> ws <span style="color:#f92672">=</span> node.waitStatus;
+<span style="color:#66d9ef">if</span> (ws <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>)
+    compareAndSetWaitStatus(node, ws, <span style="color:#ae81ff">0</span>);
+
+</code></pre></div><blockquote>
+<p>其实这里只判断状态为SIGNAL和0还有另一个原因，那就是当前执行doReleaseShared循环时的状态只可能为SIGNAL和0，因为如果这时没有后继节点的话，当前节点状态没有被修改，是初始的0；
+如果在执行setHead方法之前，这时刚好有后继节点被添加到队列中的话，因为这时后继节点判断p == head为false，所以会执行shouldParkAfterFailedAcquire方法，将当前节点的状态设置为SIGNAL。
+当状态为0时设置状态为PROPAGATE成功，则判断h == head结果为true，表示当前节点是队列中的唯一一个节点，所以直接就返回了；如果为false，则说明已经有后继节点的线程设置了head，这时不返回继续循环，但刚才获取的h已经用不到了，等待着被回收。</p>
+</blockquote>
+<hr>
+<h4 id="countdown-方法">countDown 方法</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">countDown</span>() {
+    sync.releaseShared(<span style="color:#ae81ff">1</span>);
+}
+</code></pre></div><p>这里是调用了AQS中的<code>releaseShared</code>方法。</p>
+<hr>
+<h4 id="releaseshared-方法">releaseShared 方法</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">public final boolean <span style="color:#a6e22e">releaseShared</span>(<span style="color:#66d9ef">int</span> arg) {
+    <span style="color:#75715e">//&lt;1&gt; 尝试释放共享节点，如果成功则执行释放和唤醒操作
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (tryReleaseShared(arg)) {
+        doReleaseShared();
+        <span style="color:#66d9ef">return</span> true;
+    }
+    <span style="color:#66d9ef">return</span> false;
+}
+</code></pre></div><p>这里调用的<code>tryReleaseShared</code>方法是在<code>CountDownLatch</code>中的Sync类重写的，而<code>doReleaseShare</code>d方法已在上文中介绍过了。</p>
+<hr>
+<h4 id="tryreleaseshared-方法">tryReleaseShared 方法</h4>
+<p>这里设置state的操作需要循环来设置以确保成功。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">protected boolean <span style="color:#a6e22e">tryReleaseShared</span>(<span style="color:#66d9ef">int</span> releases) {
+    <span style="color:#75715e">// Decrement count; signal when transition to zero
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> (;;) {
+        <span style="color:#75715e">//&lt;1&gt; 获取计数器数量
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getState();
+        <span style="color:#75715e">//&lt;2&gt; 为0是返回false表示不需要释放
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> (c <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
+            <span style="color:#66d9ef">return</span> false;
+        <span style="color:#75715e">//&lt;3&gt; 否则将计数器减1
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">int</span> nextc <span style="color:#f92672">=</span> c<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+        <span style="color:#66d9ef">if</span> (compareAndSetState(c, nextc))
+            <span style="color:#66d9ef">return</span> nextc <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>;
+    }
+}
+</code></pre></div><hr>
+<h4 id="超时功能的await方法">超时功能的await方法</h4>
+<p>对应于上文中提到的<code>doAcquireSharedInterruptibly</code>方法，还有一个提供了超时控制的<code>doAcquireSharedNanos</code>方法，代码如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">private boolean <span style="color:#a6e22e">doAcquireSharedNanos</span>(<span style="color:#66d9ef">int</span> arg, <span style="color:#66d9ef">long</span> nanosTimeout)
+            throws InterruptedException {
+	<span style="color:#66d9ef">if</span> (nanosTimeout <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0L</span>)
+	    <span style="color:#66d9ef">return</span> false;
+	final <span style="color:#66d9ef">long</span> deadline <span style="color:#f92672">=</span> System.nanoTime() <span style="color:#f92672">+</span> nanosTimeout;
+	final Node node <span style="color:#f92672">=</span> addWaiter(Node.SHARED);
+	boolean failed <span style="color:#f92672">=</span> true;
+	try {
+	    <span style="color:#66d9ef">for</span> (;;) {
+	        final Node p <span style="color:#f92672">=</span> node.predecessor();
+	        <span style="color:#66d9ef">if</span> (p <span style="color:#f92672">==</span> head) {
+	            <span style="color:#66d9ef">int</span> r <span style="color:#f92672">=</span> tryAcquireShared(arg);
+	            <span style="color:#66d9ef">if</span> (r <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>) {
+	                setHeadAndPropagate(node, r);
+	                p.next <span style="color:#f92672">=</span> null; <span style="color:#75715e">// help GC
+</span><span style="color:#75715e"></span>	                failed <span style="color:#f92672">=</span> false;
+	                <span style="color:#66d9ef">return</span> true;
+	            }
+	        }
+	        nanosTimeout <span style="color:#f92672">=</span> deadline <span style="color:#f92672">-</span> System.nanoTime();
+	        <span style="color:#66d9ef">if</span> (nanosTimeout <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">0L</span>)
+	            <span style="color:#66d9ef">return</span> false;
+	        <span style="color:#66d9ef">if</span> (shouldParkAfterFailedAcquire(p, node) <span style="color:#f92672">&amp;&amp;</span>
+	            nanosTimeout <span style="color:#f92672">&gt;</span> spinForTimeoutThreshold)
+	            LockSupport.parkNanos(this, nanosTimeout);
+	        <span style="color:#66d9ef">if</span> (Thread.interrupted())
+	            throw new InterruptedException();
+	    }
+	} finally {
+	    <span style="color:#66d9ef">if</span> (failed)
+	        cancelAcquire(node);
+	}
+}
+</code></pre></div><p>与doAcquireSharedInterruptibly方法新增了以下功能：</p>
+<ul>
+<li>增加了一个deadline变量表示超时的截止时间，根据当前时间与传入的nanosTimeout计算得出；</li>
+<li>每次循环判断是否已经超出截止时间，即deadline - System.nanoTime()是否大于0，大于0表示已经超时，返回false，小于0表示还未超时；</li>
+<li>如果未超时通过调用shouldParkAfterFailedAcquire方法判断是否需要park，如果返回true则再判断nanosTimeout &gt; spinForTimeoutThreshold，spinForTimeoutThreshold是自旋的最小阈值，这里被Doug Lea设置成了1000，表示1000纳秒，也就是说如果剩余的时间不足1000纳秒，则不需要park。</li>
+</ul>
+<hr>
+<h3 id="总结">总结</h3>
+<ol>
+<li>
+<p><strong>CountDownLatch的AQS共享模式的实现：</strong></p>
+<p><code>调用await</code></p>
+</li>
+</ol>
+<ul>
+<li>
+<p>共享锁获取失败（计数器还不为0），则将该线程封装为一个Node对象放入队列中，并阻塞该线程。</p>
+</li>
+<li>
+<p>共享锁获取成功（计数器为0），则从第一个节点开始依次唤醒后继节点，实现共享状态的传播。</p>
+<p><code>调用countDown</code></p>
+</li>
+<li>
+<p>如果计数器不为0，则不释放，继续阻塞，并把state的值减1；</p>
+</li>
+<li>
+<p>如果计数器为0，则唤醒节点，解除线程的阻塞状态。</p>
+</li>
+</ul>
+<ol start="2">
+<li>
+<p><strong>CountDownLatch表示允许一个或多个线程等待其它线程的操作执行完毕后再执行后续的操作</strong></p>
+</li>
+<li>
+<p><strong>独占模式和共享模式得区别：</strong></p>
+<p><code>相同点</code></p>
+</li>
+</ol>
+<ul>
+<li>
+<p>锁的获取和释放的判断都是由子类来实现的。</p>
+<p><code>不同点</code></p>
+</li>
+<li>
+<p>独占功能在获取节点之后并且还未释放时，其他的节点会一直阻塞，直到第一个节点被释放才会唤醒。</p>
+</li>
+<li>
+<p>共享功能在获取节点之后会立即唤醒队列中的后继节点，每一个节点都会唤醒自己的后继节点，这就是共享状态的传播。</p>
+</li>
+</ul>
+<blockquote>
+<p>根据以上的总结可以看出，AQS不关心state具体是什么，含义由子类去定义，子类则根据该变量来进行获取和释放的判断，AQS只是维护了该变量，</p>
+<p>并且实现了一系列用来判断资源是否可以访问的API，它提供了对线程的入队和出队的操作，它还负责处理线程对资源的访问方式，</p>
+<p>例如：什么时候可以对资源进行访问，什么时候阻塞线程，什么时候唤醒线程，线程被取消后如何处理等。而子类则用来实现资源是否可以被访问的判断。</p>
+</blockquote>
+
+                        </div>
+                        
+                        
+                        
+                        
+                        <ul class="pager blog-pager">
+                        
+                        <li class="previous">
+                        <a href="/blog/raft-%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/" data-toggle="tooltip" data-placement="top" title="Raft 思维导图">&larr; 上一篇</a>
+                        </li>
+                         
+                        <li class="next">
+                        <a href="/blog/priorityqueue-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" data-toggle="tooltip" data-placement="top" title="PriorityQueue 源码分析">下一篇 &rarr;</a>
+                        </li>
+                        
+                        </ul>
+                        
+                        
+                        
+
+
+                    </div>
+                    
+
+                    
+
+                    
+
+                    <div class="col-md-3">
+
+                        
+
+                        <div class="panel panel-default sidebar-menu">
+     
+    <div class="panel-heading">
+     <h3 class="panel-title">相关文章</h3>
+    </div>
+    <div class="panel-body">
+     <ul class="nav nav-pills nav-stacked">
+        
+        <li><a href="/blog/reentrantreadwritelock-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fa fa-link"></i>ReentrantReadWriteLock 源码分析</a></li>
+         
+        <li><a href="/blog/cyclicbarrier-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fa fa-link"></i>CyclicBarrier 源码分析</a></li>
+         
+        <li><a href="/blog/reentrantlock-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fa fa-link"></i>ReentrantLock 源码分析</a></li>
+         
+        <li><a href="/blog/semaphore-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fa fa-link"></i>Semaphore 源码分析</a></li>
+         
+        <li><a href="/blog/threadpoolexecutor-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"><i class="fa fa-link"></i>ThreadPoolExecutor 源码分析</a></li>
+         
+     </ul>
+    </div>
+     
+</div>
+
+
+
+
+
+<div class="panel panel-default sidebar-menu">
+
+    <div class="panel-heading">
+      <h3 class="panel-title">分类</h3>
+    </div>
+
+    <div class="panel-body">
+        <ul class="nav nav-pills nav-stacked">
+            
+            <li><a href="/categories/aqs"><i class="fa fa-navicon"></i>aqs (6)</a>
+            </li>
+            
+            <li><a href="/categories/%e5%88%86%e5%b8%83%e5%bc%8f"><i class="fa fa-navicon"></i>分布式 (2)</a>
+            </li>
+            
+            <li><a href="/categories/%e5%8e%9f%e5%ad%90%e7%b1%bb"><i class="fa fa-navicon"></i>原子类 (2)</a>
+            </li>
+            
+            <li><a href="/categories/%e6%b6%88%e6%81%af%e4%b8%ad%e9%97%b4%e4%bb%b6"><i class="fa fa-navicon"></i>消息中间件 (4)</a>
+            </li>
+            
+            <li><a href="/categories/%e7%ba%bf%e7%a8%8b%e6%b1%a0"><i class="fa fa-navicon"></i>线程池 (3)</a>
+            </li>
+            
+            <li><a href="/categories/%e9%9b%86%e5%90%88"><i class="fa fa-navicon"></i>集合 (1)</a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+
+
+
+
+
+
+                        
+
+                    </div>
+                    
+
+                    
+
+                </div>
+                
+
+            </div>
+            
+        </div>
+        
+
+        <footer id="footer">
+    <div class="container">
+
+        
+        <div class="col-md-4 col-sm-6">
+            <h4>关于我</h4>
+
+            <p>Service Mesh 爱好者</p>
+
+            <hr class="hidden-md hidden-lg hidden-sm">
+
+        </div>
+        
+        
+
+        <div class="col-md-4 col-sm-6">
+
+             
+            <h4>最新博客</h4>
+
+            <div class="blog-entries">
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="/blog/atomicstampedreference-%E8%AF%A6%E8%A7%A3/">
+                            
+                            <img src="/img/blog/banners/006tKfTcly1g0n3qqw0xqj31400u0hdt.jpg" class="img-responsive" alt="AtomicStampedReference 详解">
+                            
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="/blog/atomicstampedreference-%E8%AF%A6%E8%A7%A3/">AtomicStampedReference 详解</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="/blog/longadder-%E8%AF%A6%E8%A7%A3/">
+                            
+                            <img src="/img/blog/banners/006tKfTcly1g0d0qfcwpfj31400u0u11.jpg" class="img-responsive" alt="LongAdder 详解">
+                            
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="/blog/longadder-%E8%AF%A6%E8%A7%A3/">LongAdder 详解</a></h5>
+                    </div>
+                </div>
+                
+                <div class="item same-height-row clearfix">
+                    <div class="image same-height-always">
+                        <a href="/blog/pulsar-topic-discovery/">
+                            
+                            <img src="/img/blog/pulsar/pulsar.svg" class="img-responsive" alt="Pulsar - Topic Discovery">
+                            
+                        </a>
+                    </div>
+                    <div class="name same-height-always">
+                        <h5><a href="/blog/pulsar-topic-discovery/">Pulsar - Topic Discovery</a></h5>
+                    </div>
+                </div>
+                
+            </div>
+
+            <hr class="hidden-md hidden-lg">
+             
+
+        </div>
+        
+
+        
+        <div class="col-md-4 col-sm-6 ">
+
+            <h4>联系</h4>
+
+            <p>个人微信</br>请备注姓名-公司信息</p><p><img src="/img/1.png"></p>
+      
+
+            <a href="/contact" class="btn btn-small btn-template-main">跳到联系页面</a>
+
+            <hr class="hidden-md hidden-lg hidden-sm">
+
+        </div>
+        
+        
+
+    </div>
+    
+</footer>
+
+
+
+
+
+
+
+<div id="copyright">
+    <div class="container">
+        <div class="col-md-12">
+            
+            <p class="pull-left">Copyright ©️ 2020, ServiceMesher all rights reserved.</p>
+            
+            
+            <p class="pull-left">&nbsp;<a href="http://www.beian.miit.gov.cn/"> 苏ICP备20005919号</a></p>
+            
+            <p class="pull-right">
+                模板来自 <a href="https://bootstrapious.com/p/universal-business-e-commerce-template">Bootstrapious</a>.
+                
+
+                移植到 Hugo 来自 <a href="https://github.com/devcows/hugo-universal-theme">DevCows</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    </div>
+    
+
+    <script src="//code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0/jquery.counterup.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-parallax/1.1.3/jquery-parallax.js"></script>
+<script src="/js/front.js"></script>
+
+
+<script src="/js/owl.carousel.min.js"></script>
+
+<script src="/js/prism.js"></script>
+
+
+<script src="/js/algoliasearch.min.js"></script>
+<script src="/js/autocomplete.min.js"></script>
+
+
+  </body>
+</html>
