@@ -5,8 +5,8 @@ draft: false
 banner: "/img/blog/pulsar/pulsar.svg"
 author: "Siran"
 summary: ""
-tags: ["消息中间件"]
-categories: ["消息中间件"]
+tags: ["Pulsar"]
+categories: ["Pulsar"]
 keywords: ["消息中间件","Pulsar"]
 ---
 ### Pulsar的分层架构
