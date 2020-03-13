@@ -5,8 +5,8 @@ draft: false
 banner: "/img/blog/banners/00704eQkgy1fs2ua9kohvj30rs0kub29.jpg"
 author: "Siran"
 summary: ""
-tags: ["分布式"]
-categories: ["分布式"]
+tags: ["gateway"]
+categories: ["gateway"]
 keywords: ["分布式"]
 ---
 
