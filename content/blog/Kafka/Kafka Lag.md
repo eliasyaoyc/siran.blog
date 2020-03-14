@@ -1,12 +1,12 @@
 ---
 title: "Kafka Lag"
 date: 2020-03-10T15:37:42+08:00
-draft: false
-banner: "/img/blog/spring/springbanner.png"
+draft: true
+banner: "/img/blog/kafka/kafkaLogo.jpg"
 author: "Siran"
 summary: ""
-tags: ["spriKafkang"]
-categories: ["Kafka"]
+tags: ["kafka"]
+categories: ["kafka"]
 keywords: ["Kafka"]
 ---
 
