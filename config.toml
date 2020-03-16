@@ -105,6 +105,7 @@ paginate = 10
     email = "1061347899@qq.com"
     # about_us = "<p>Service Mesh 爱好者</br>github地址</p>"
     about_us = "<p>Service Mesh 爱好者</p>"
+    theyann = "theyann"
     copyright = "Copyright ©️ 2020, ServiceMesher all rights reserved."
     icpno = "苏ICP备20005919号"
     # Format dates with Go's time formatting

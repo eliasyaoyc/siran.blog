@@ -61,6 +61,9 @@
 - id: aboutUs
   translation: "关于我"
 
+- id: friendshipLink
+  translation: "友情连接"
+
 - id: newer
   translation: "上一页"
 
