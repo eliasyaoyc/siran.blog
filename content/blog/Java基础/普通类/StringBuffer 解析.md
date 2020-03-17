@@ -5,7 +5,7 @@ draft: false
 banner: "/img/blog/banners/006tNc79ly1g1wrwnznblj31400u0x6p.jpg"
 author: "Siran"
 summary: ""
-tags: ["Java"]
+tags: ["StringBuffer"]
 categories: ["Java基础"]
 keywords: ["Java","基础"]
 ---
