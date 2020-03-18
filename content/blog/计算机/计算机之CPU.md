@@ -1,6 +1,6 @@
 ---
 title: "计算机之CPU"
-date: 2020-03-16T12:12:42+08:00
+date: 2020-03-14T12:12:42+08:00
 draft: false
 banner: "/img/blog/计算机/CPU.jpeg"
 author: "Siran"
