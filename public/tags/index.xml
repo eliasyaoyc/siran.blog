@@ -84,29 +84,11 @@
     </item>
     
     <item>
-      <title>DirectByteBuffer</title>
-      <link>/tags/directbytebuffer/</link>
-      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
-      
-      <guid>/tags/directbytebuffer/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>final</title>
       <link>/tags/final/</link>
       <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
       
       <guid>/tags/final/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Finalizer</title>
-      <link>/tags/finalizer/</link>
-      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
-      
-      <guid>/tags/finalizer/</guid>
       <description></description>
     </item>
     
@@ -138,47 +120,11 @@
     </item>
     
     <item>
-      <title>MappedByteBuffer</title>
-      <link>/tags/mappedbytebuffer/</link>
-      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
-      
-      <guid>/tags/mappedbytebuffer/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Reference</title>
-      <link>/tags/reference/</link>
-      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
-      
-      <guid>/tags/reference/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>String</title>
       <link>/tags/string/</link>
       <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
       
       <guid>/tags/string/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>StringBuffer</title>
-      <link>/tags/stringbuffer/</link>
-      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
-      
-      <guid>/tags/stringbuffer/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>StringBuilder</title>
-      <link>/tags/stringbuilder/</link>
-      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
-      
-      <guid>/tags/stringbuilder/</guid>
       <description></description>
     </item>
     

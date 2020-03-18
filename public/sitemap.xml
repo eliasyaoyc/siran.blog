@@ -173,32 +173,12 @@
   </url>
   
   <url>
-    <loc>/tags/directbytebuffer/</loc>
-    <lastmod>2020-03-08T16:37:42+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/blog/directbytebuffer-%E8%A7%A3%E6%9E%90/</loc>
-    <lastmod>2020-03-08T16:37:42+08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/tags/final/</loc>
     <lastmod>2020-03-08T16:37:42+08:00</lastmod>
   </url>
   
   <url>
     <loc>/blog/final-%E8%AF%A6%E8%A7%A3/</loc>
-    <lastmod>2020-03-08T16:37:42+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/finalizer/</loc>
-    <lastmod>2020-03-08T16:37:42+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/blog/finalizer-%E8%A7%A3%E6%9E%90/</loc>
     <lastmod>2020-03-08T16:37:42+08:00</lastmod>
   </url>
   
@@ -238,52 +218,12 @@
   </url>
   
   <url>
-    <loc>/tags/mappedbytebuffer/</loc>
-    <lastmod>2020-03-08T16:37:42+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/blog/mappedbytebuffer-%E8%A7%A3%E6%9E%90/</loc>
-    <lastmod>2020-03-08T16:37:42+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/reference/</loc>
-    <lastmod>2020-03-08T16:37:42+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/blog/reference-%E8%A7%A3%E6%9E%90/</loc>
-    <lastmod>2020-03-08T16:37:42+08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/tags/string/</loc>
     <lastmod>2020-03-08T16:37:42+08:00</lastmod>
   </url>
   
   <url>
     <loc>/blog/string-%E7%9A%84%E7%89%B9%E7%82%B9/</loc>
-    <lastmod>2020-03-08T16:37:42+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/stringbuffer/</loc>
-    <lastmod>2020-03-08T16:37:42+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/blog/stringbuffer-%E8%A7%A3%E6%9E%90/</loc>
-    <lastmod>2020-03-08T16:37:42+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/tags/stringbuilder/</loc>
-    <lastmod>2020-03-08T16:37:42+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/blog/stringbuilder-%E8%A7%A3%E6%9E%90/</loc>
     <lastmod>2020-03-08T16:37:42+08:00</lastmod>
   </url>
   
@@ -384,11 +324,6 @@
   
   <url>
     <loc>/blog/%E9%87%8D%E6%8E%92%E5%BA%8F/</loc>
-    <lastmod>2020-03-08T16:37:42+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/blog/%E9%9B%B6%E6%8B%B7%E8%B4%9D/</loc>
     <lastmod>2020-03-08T16:37:42+08:00</lastmod>
   </url>
   
