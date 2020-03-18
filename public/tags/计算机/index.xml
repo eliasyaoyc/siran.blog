@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>计算机 on Siran Yao</title>
+    <link>/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/</link>
+    <description>Recent content in 计算机 on Siran Yao</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Tue, 17 Mar 2020 17:12:42 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>计算机之操作系统和应用</title>
+      <link>/blog/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B9%8B%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%92%8C%E5%BA%94%E7%94%A8/</link>
+      <pubDate>Tue, 17 Mar 2020 17:12:42 +0800</pubDate>
+      
+      <guid>/blog/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B9%8B%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%92%8C%E5%BA%94%E7%94%A8/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>计算机之IO</title>
+      <link>/blog/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B9%8B%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA/</link>
+      <pubDate>Tue, 17 Mar 2020 16:12:42 +0800</pubDate>
+      
+      <guid>/blog/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B9%8B%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>计算机之文件系统</title>
+      <link>/blog/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B9%8B%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</link>
+      <pubDate>Tue, 17 Mar 2020 15:12:42 +0800</pubDate>
+      
+      <guid>/blog/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B9%8B%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</guid>
+      <description>参考 《现代操作系统 第四版》 又来搞事情了，这次女友让我研究如何实现一个文件系统 昨晚上女友问我，你知道啥是文件吗？于是就有了今天的文章</description>
+    </item>
+    
+    <item>
+      <title>计算机之内存管理</title>
+      <link>/blog/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B9%8B%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</link>
+      <pubDate>Mon, 16 Mar 2020 19:12:42 +0800</pubDate>
+      
+      <guid>/blog/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B9%8B%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</guid>
+      <description>参考 《现代操作系统 第四版》 内存：你跑慢点行不行？CPU：跑慢点你养我吗？内存：我不管！</description>
+    </item>
+    
+    <item>
+      <title>计算机之进程与线程</title>
+      <link>/blog/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B9%8B%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B/</link>
+      <pubDate>Sun, 15 Mar 2020 19:12:42 +0800</pubDate>
+      
+      <guid>/blog/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B9%8B%E8%BF%9B%E7%A8%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B/</guid>
+      <description>操作系统中最核心的概念是进程，这是对正在运行程序的一个抽象。即时可以使用的CPU只有一个，但是它们也具有支持(伪)并发操作的能力，它们将一个单独的CPU变换成多个 虚拟的CPU</description>
+    </item>
+    
+    <item>
+      <title>计算机之CPU</title>
+      <link>/blog/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B9%8Bcpu/</link>
+      <pubDate>Sat, 14 Mar 2020 12:12:42 +0800</pubDate>
+      
+      <guid>/blog/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B9%8Bcpu/</guid>
+      <description>CPU 的全称是 Central Processing Unit ，它是你的电脑中最硬件的组件</description>
+    </item>
+    
+    <item>
+      <title>计算机之基础</title>
+      <link>/blog/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B9%8B%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Fri, 13 Mar 2020 19:12:42 +0800</pubDate>
+      
+      <guid>/blog/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%B9%8B%E5%9F%BA%E7%A1%80/</guid>
+      <description>系统的硬件组成 总线 贯穿整个系统的是一组电子管道，称作总线，它携带信息字节并负责在各个部件间传递。总线通常被设计成传送定长的字节块，也就是字(</description>
+    </item>
+    
+    <item>
+      <title>自学计算机科学指南</title>
+      <link>/blog/%E8%87%AA%E5%AD%A6%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E6%8C%87%E5%8D%97/</link>
+      <pubDate>Thu, 12 Mar 2020 19:12:42 +0800</pubDate>
+      
+      <guid>/blog/%E8%87%AA%E5%AD%A6%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6%E6%8C%87%E5%8D%97/</guid>
+      <description>如果你是一个自学成才的工程师，或者从编程培训班毕业，那么你很有必要学习计算机科学。幸运的是，不必为此花上数年光阴和不菲费用去攻读一个学位：仅仅依靠自己，你就可以获得世界一流水平的教育</description>
+    </item>
+    
+  </channel>
+</rss>

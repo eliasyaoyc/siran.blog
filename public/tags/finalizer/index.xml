@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Finalizer on Siran Yao</title>
+    <link>/tags/finalizer/</link>
+    <description>Recent content in Finalizer on Siran Yao</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Sun, 08 Mar 2020 16:37:42 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/finalizer/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Finalizer 解析</title>
+      <link>/blog/finalizer-%E8%A7%A3%E6%9E%90/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/blog/finalizer-%E8%A7%A3%E6%9E%90/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

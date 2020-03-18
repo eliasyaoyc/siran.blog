@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>StringBuffer on Siran Yao</title>
+    <link>/tags/stringbuffer/</link>
+    <description>Recent content in StringBuffer on Siran Yao</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Sun, 08 Mar 2020 16:37:42 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/stringbuffer/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>StringBuffer 解析</title>
+      <link>/blog/stringbuffer-%E8%A7%A3%E6%9E%90/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/blog/stringbuffer-%E8%A7%A3%E6%9E%90/</guid>
+      <description>题目 给定两个字符串 s1 和 s2 ,计算出将s1 转换为 s2 所使用的最小操作数。 你可以对一个字符串进行如下三种操作： 插入一个字符串 删除一个字符串 替换一个字</description>
+    </item>
+    
+  </channel>
+</rss>

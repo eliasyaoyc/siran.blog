@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Siran Yao</title>
+    <link>/tags/</link>
+    <description>Recent content in Tags on Siran Yao</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Tue, 17 Mar 2020 17:12:42 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>计算机</title>
+      <link>/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/</link>
+      <pubDate>Tue, 17 Mar 2020 17:12:42 +0800</pubDate>
+      
+      <guid>/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>gateway</title>
+      <link>/tags/gateway/</link>
+      <pubDate>Thu, 12 Mar 2020 19:12:42 +0800</pubDate>
+      
+      <guid>/tags/gateway/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>HTTP</title>
+      <link>/tags/http/</link>
+      <pubDate>Thu, 12 Mar 2020 19:12:42 +0800</pubDate>
+      
+      <guid>/tags/http/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kafka</title>
+      <link>/tags/kafka/</link>
+      <pubDate>Tue, 10 Mar 2020 15:37:42 +0800</pubDate>
+      
+      <guid>/tags/kafka/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>spring boot</title>
+      <link>/tags/spring-boot/</link>
+      <pubDate>Tue, 10 Mar 2020 15:37:42 +0800</pubDate>
+      
+      <guid>/tags/spring-boot/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>AQS</title>
+      <link>/tags/aqs/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/aqs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>AQS总结</title>
+      <link>/tags/aqs%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/aqs%E6%80%BB%E7%BB%93/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CAS</title>
+      <link>/tags/cas/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/cas/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DirectByteBuffer</title>
+      <link>/tags/directbytebuffer/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/directbytebuffer/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>final</title>
+      <link>/tags/final/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/final/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Finalizer</title>
+      <link>/tags/finalizer/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/finalizer/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Happens-before</title>
+      <link>/tags/happens-before/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/happens-before/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>JMM</title>
+      <link>/tags/jmm/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/jmm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>LockSupport</title>
+      <link>/tags/locksupport/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/locksupport/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>MappedByteBuffer</title>
+      <link>/tags/mappedbytebuffer/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/mappedbytebuffer/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Reference</title>
+      <link>/tags/reference/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/reference/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>String</title>
+      <link>/tags/string/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/string/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>StringBuffer</title>
+      <link>/tags/stringbuffer/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/stringbuffer/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>StringBuilder</title>
+      <link>/tags/stringbuilder/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/stringbuilder/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Synchronize</title>
+      <link>/tags/synchronize/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/synchronize/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Thread</title>
+      <link>/tags/thread/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/thread/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ThreadLocal</title>
+      <link>/tags/threadlocal/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/threadlocal/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Volatile</title>
+      <link>/tags/volatile/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/volatile/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>伪共享</title>
+      <link>/tags/%E4%BC%AA%E5%85%B1%E4%BA%AB/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/%E4%BC%AA%E5%85%B1%E4%BA%AB/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>算法</title>
+      <link>/tags/%E7%AE%97%E6%B3%95/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/%E7%AE%97%E6%B3%95/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>线程池</title>
+      <link>/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/%E7%BA%BF%E7%A8%8B%E6%B1%A0/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>重排序</title>
+      <link>/tags/%E9%87%8D%E6%8E%92%E5%BA%8F/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/tags/%E9%87%8D%E6%8E%92%E5%BA%8F/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>原子类</title>
+      <link>/tags/%E5%8E%9F%E5%AD%90%E7%B1%BB/</link>
+      <pubDate>Thu, 05 Mar 2020 12:37:42 +0800</pubDate>
+      
+      <guid>/tags/%E5%8E%9F%E5%AD%90%E7%B1%BB/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Pulsar</title>
+      <link>/tags/pulsar/</link>
+      <pubDate>Wed, 04 Mar 2020 22:37:42 +0800</pubDate>
+      
+      <guid>/tags/pulsar/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>分布式</title>
+      <link>/tags/%E5%88%86%E5%B8%83%E5%BC%8F/</link>
+      <pubDate>Thu, 13 Feb 2020 19:12:42 +0800</pubDate>
+      
+      <guid>/tags/%E5%88%86%E5%B8%83%E5%BC%8F/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>集合</title>
+      <link>/tags/%E9%9B%86%E5%90%88/</link>
+      <pubDate>Wed, 12 Feb 2020 19:12:42 +0800</pubDate>
+      
+      <guid>/tags/%E9%9B%86%E5%90%88/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
