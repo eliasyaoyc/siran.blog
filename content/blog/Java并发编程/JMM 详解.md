@@ -5,7 +5,7 @@ draft: false
 banner: "/img/blog/banners/006tNc79ly1g1wrwnznblj31400u0x6p.jpg"
 author: "Siran"
 summary: ""
-tags: ["JMM"]
+tags: ["并发理论"]
 categories: ["并发编程"]
 keywords: ["Java","基础"]
 ---
