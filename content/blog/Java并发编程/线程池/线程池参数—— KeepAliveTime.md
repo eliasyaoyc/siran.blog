@@ -2,7 +2,7 @@
 title: "线程池参数—— KeepAliveTime"
 date: 2020-01-05T12:12:42+08:00
 draft: false
-banner: "/img/blog/banners/006tNc79ly1g1wro2nt88j31400u0u0z.jpg"
+banner: "/img/blog/banners/006tNc79ly1g1wrp8d29yj31400u0kjm.jpg"
 author: "Siran"
 summary: ""
 tags: ["线程池"]

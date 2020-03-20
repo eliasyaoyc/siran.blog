@@ -2,7 +2,7 @@
 title: "ScheduledThreadPoolExecutor 源码分析"
 date: 2020-01-05T12:12:42+08:00
 draft: false
-banner: "/img/blog/banners/006tNc79ly1g1wro2nt88j31400u0u0z.jpg"
+banner: "/img/blog/banners/006tNc79ly1g1wrp8d29yj31400u0kjm.jpg"
 author: "Siran"
 summary: "ScheduledThreadPoolExecutor 定义了一个延迟队列 DelayedWorkQueue，这个队列是基于二叉堆来实现的，每次都会把最快要执行的任务放入堆顶(最小堆)。"
 tags: ["线程池"]
