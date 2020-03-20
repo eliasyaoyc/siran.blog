@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Thread on Siran Yao</title>
+    <link>/tags/thread/</link>
+    <description>Recent content in Thread on Siran Yao</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Sun, 08 Mar 2020 16:37:42 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/thread/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Thread 详解</title>
+      <link>/blog/thread-%E8%AF%A6%E8%A7%A3/</link>
+      <pubDate>Sun, 08 Mar 2020 16:37:42 +0800</pubDate>
+      
+      <guid>/blog/thread-%E8%AF%A6%E8%A7%A3/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
