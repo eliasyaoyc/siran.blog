@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kafka on Siran Yao</title>
+    <link>/categories/kafka/</link>
+    <description>Recent content in Kafka on Siran Yao</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Tue, 10 Mar 2020 15:37:42 +0800</lastBuildDate>
+    
+	<atom:link href="/categories/kafka/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Kafka Producer 拦截器</title>
+      <link>/blog/kafka-producer-%E6%8B%A6%E6%88%AA%E5%99%A8/</link>
+      <pubDate>Tue, 10 Mar 2020 15:37:42 +0800</pubDate>
+      
+      <guid>/blog/kafka-producer-%E6%8B%A6%E6%88%AA%E5%99%A8/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

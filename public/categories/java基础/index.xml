@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Java基础 on Siran Yao</title>
+    <link>/categories/java%E5%9F%BA%E7%A1%80/</link>
+    <description>Recent content in Java基础 on Siran Yao</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Thu, 19 Mar 2020 10:20:42 +0800</lastBuildDate>
+    
+	<atom:link href="/categories/java%E5%9F%BA%E7%A1%80/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>深入分析 HashMap</title>
+      <link>/blog/%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90-hashmap/</link>
+      <pubDate>Thu, 19 Mar 2020 10:20:42 +0800</pubDate>
+      
+      <guid>/blog/%E6%B7%B1%E5%85%A5%E5%88%86%E6%9E%90-hashmap/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>深入理解 String</title>
+      <link>/blog/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-string/</link>
+      <pubDate>Thu, 19 Mar 2020 09:37:42 +0800</pubDate>
+      
+      <guid>/blog/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-string/</guid>
+      <description>问题 String 是如何实现的？它有哪些重要的方法？ JDK高版本中的String 有什么变化？ 为什么 String 类型要用 final 修饰？ == 和 equals 的区别是什么？ String 和 String</description>
+    </item>
+    
+    <item>
+      <title>PriorityQueue 源码分析</title>
+      <link>/blog/priorityqueue-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</link>
+      <pubDate>Wed, 12 Feb 2020 19:12:42 +0800</pubDate>
+      
+      <guid>/blog/priorityqueue-%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</guid>
+      <description>PriorityQueue里的每个元素都会进行排序，每次弹出一个元素要么是最大的要么是最小的，取决于排序规则。</description>
+    </item>
+    
+  </channel>
+</rss>
