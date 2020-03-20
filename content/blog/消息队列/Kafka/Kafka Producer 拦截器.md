@@ -6,7 +6,7 @@ banner: "/img/blog/kafka/kafkaLogo.jpg"
 author: "Siran"
 summary: ""
 tags: ["kafka"]
-categories: ["Kafka"]
+categories: ["消息队列"]
 keywords: ["Kafka"]
 ---
 
