@@ -4,7 +4,7 @@ date: 2020-03-20T16:37:42+08:00
 draft: false
 banner: "/img/blog/Java基础/1.jpg"
 author: "Siran"
-summary: "在多线程并发编程中synchronized 和 volatile 扮演着很重要的角色，volatile是轻量级的 synchronized,它能保证共享变量在多处理器下的`可见性`"
+summary: "在多线程并发编程中synchronized 和 volatile 扮演着很重要的角色，volatile是轻量级的 synchronized,它能保证共享变量在多处理器下的可见性"
 tags: ["并发关键字"]
 categories: ["并发编程"]
 keywords: ["Java","基础"]
@@ -29,6 +29,7 @@ keywords: ["Java","基础"]
 volatile保证了不同线程对volatile修饰的共享变量进行操作时的`可见性`。**（任意线程）总是能看到对这个volatile变量最后的写入。**
 
 ![](/img/blog/并发编程/1584716286872.jpg)
+
 在上图中：v1变量没有被修饰成 volatile，如果线程A 首先对 v1进行读取存入线程A的本地内存中，
 线程B对v1变量进行修改后，线程A将无法获取，因为在它的本地内存中存在，直接返回，`这就是内存不可见。`
 
