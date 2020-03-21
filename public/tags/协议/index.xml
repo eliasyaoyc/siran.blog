@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>协议 on Siran Yao</title>
+    <link>/tags/%E5%8D%8F%E8%AE%AE/</link>
+    <description>Recent content in 协议 on Siran Yao</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Thu, 19 Mar 2020 19:12:42 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/%E5%8D%8F%E8%AE%AE/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>HTTP 协议总结.md</title>
+      <link>/blog/http-%E5%8D%8F%E8%AE%AE%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Thu, 19 Mar 2020 19:12:42 +0800</pubDate>
+      
+      <guid>/blog/http-%E5%8D%8F%E8%AE%AE%E6%80%BB%E7%BB%93/</guid>
+      <description>HTTP 是一个在计算机世界里专门在两点之间传输文字、图片、音频、视频等超文本数据的约定和规范</description>
+    </item>
+    
+  </channel>
+</rss>

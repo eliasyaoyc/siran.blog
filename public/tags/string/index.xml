@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>String on Siran Yao</title>
+    <link>/tags/string/</link>
+    <description>Recent content in String on Siran Yao</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    <lastBuildDate>Thu, 19 Mar 2020 09:37:42 +0800</lastBuildDate>
+    
+	<atom:link href="/tags/string/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>深入理解 String</title>
+      <link>/blog/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-string/</link>
+      <pubDate>Thu, 19 Mar 2020 09:37:42 +0800</pubDate>
+      
+      <guid>/blog/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-string/</guid>
+      <description>问题 String 是如何实现的？它有哪些重要的方法？ JDK高版本中的String 有什么变化？ 为什么 String 类型要用 final 修饰？ == 和 equals 的区别是什么？ String 和 String</description>
+    </item>
+    
+  </channel>
+</rss>
