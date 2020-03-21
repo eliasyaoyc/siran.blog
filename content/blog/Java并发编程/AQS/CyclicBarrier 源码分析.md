@@ -2,7 +2,7 @@
 title: "CyclicBarrier 源码分析"
 date: 2020-02-04T19:12:42+08:00
 draft: false
-banner: "/img/blog/banners/006tKfTcly1g0aso107znj31400u04qr.jpg"
+banner: "/img/blog/banners/006tKfTcgy1ftd20xaj6jj31ji15oqv6.jpg"
 author: "Siran"
 summary: "CyclicBarrier(回声栅栏)根据Javadoc描述，它会阻塞一组线程直到这些线程同时达到某个条件才继续执行。它就像一个栅栏一样，当一组线程都到达了栅栏处才继续往下走。"
 tags: ["AQS"]

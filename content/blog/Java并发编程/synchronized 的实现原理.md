@@ -403,6 +403,8 @@ public static void fair(String n)  {
 
 《Java 并发编程的艺术》
 
+[The Java® Virtual Machine Specification -> Threads and Locks](https://docs.oracle.com/javase/specs/jls/se8/html/jls-17.html)
+
 [1. The Java® Virtual Machine Specification](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-6.html#jvms-6.5.monitorenter)
 
 [2. The Java® Virtual Machine Specification](https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.11.10)
